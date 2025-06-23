@@ -64,4 +64,8 @@ build/
 
 # External repositories
 agent-dev-guide/
-local-ai/ 
+local-ai/
+
+# Local utility scripts
+cleanup-local-ai.sh
+start-local-ai.sh 

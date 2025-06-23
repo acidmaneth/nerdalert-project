@@ -69,7 +69,7 @@ def get_agent_response(endpoint: str, conversation_history: list):
                         print(content_chunk, end="", flush=True)
                         full_response_content += content_chunk
                     
-                    if "tool_calls" in delta:
+                    if "tool_calls" in delta and delta["tool_calls"] is not None:
                         tool_calls.extend(delta["tool_calls"])
 
                 except json.JSONDecodeError:
