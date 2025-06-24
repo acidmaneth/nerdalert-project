@@ -1,19 +1,43 @@
 {
   "name": "nerdalert-agent",
+  "version": "1.1.2",
+  "description": "A specialized AI agent for pop-culture enthusiasts with energy matching and conversation memory",
   "type": "module",
+  "main": "dist/index.js",
   "files": [
     "dist",
     "src"
   ],
   "license": "MIT",
   "engines": {
-    "node": ">=10"
+    "node": ">=16"
   },
   "scripts": {
     "start": "tsx ./src/index.ts",
     "dev": "tsx watch ./src/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc",
+    "clean": "rm -rf dist"
   },
+  "keywords": [
+    "ai",
+    "agent",
+    "pop-culture",
+    "nerd",
+    "geek",
+    "chatbot",
+    "localai",
+    "typescript"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/EAI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/EAI/issues"
+  },
+  "homepage": "https://github.com/yourusername/EAI#readme",
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.1",

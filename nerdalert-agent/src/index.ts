@@ -5,6 +5,7 @@ import helmet from "helmet";
 
 import { prompt } from "./prompt/index";
 import type { PromptPayload } from "./prompt/types";
+import { conversationMemory } from "./prompt/conversation-memory";
 import { PORT, NODE_ENV } from "./constants";
 
 const app = express();
@@ -112,6 +113,35 @@ app.post("/start", (req: Request, res: StreamResponse) => {
   // to trigger the agent's introduction.
   req.body = { messages: [] };
   handlePrompt(req, res);
+});
+
+// Memory management endpoints
+app.get("/memory/:sessionId", (req: Request, res: Response) => {
+  const { sessionId } = req.params;
+  const memory = conversationMemory.getMemory(sessionId);
+  if (memory) {
+    res.json({
+      sessionId,
+      discussedTopics: Array.from(memory.discussedTopics),
+      mentionedCharacters: Array.from(memory.mentionedCharacters),
+      explainedConcepts: Array.from(memory.explainedConcepts),
+      sharedTrivia: Array.from(memory.sharedTrivia),
+      lastUpdate: memory.lastUpdate
+    });
+  } else {
+    res.status(404).json({ error: "Session not found" });
+  }
+});
+
+app.delete("/memory/:sessionId", (req: Request, res: Response) => {
+  const { sessionId } = req.params;
+  conversationMemory.clearSession(sessionId);
+  res.json({ message: "Session memory cleared" });
+});
+
+app.get("/memory", (req: Request, res: Response) => {
+  // Return a list of active sessions (for debugging)
+  res.json({ message: "Memory management endpoints available" });
 });
 
 // Global error handler

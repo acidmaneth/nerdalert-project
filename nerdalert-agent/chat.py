@@ -2,6 +2,7 @@ import requests
 import json
 import sys
 import os
+import uuid
 
 # --- Configuration ---
 AGENT_URL = os.environ.get("AGENT_URL", "http://localhost:80")
@@ -10,6 +11,9 @@ PROMPT_ENDPOINT = f"{AGENT_URL}/prompt"
 
 # Use a session object to handle cookies automatically for the entire chat.
 session = requests.Session()
+
+# Generate a unique session ID for this chat session
+SESSION_ID = str(uuid.uuid4())
 
 def perform_web_search(query: str) -> str:
     """
@@ -41,7 +45,10 @@ def get_agent_response(endpoint: str, conversation_history: list):
     """
     Manages the conversation with the agent, including tool calls.
     """
-    payload = {"messages": conversation_history}
+    payload = {
+        "messages": conversation_history,
+        "sessionId": SESSION_ID
+    }
     
     # --- 1. Send the prompt (or tool results) to the agent ---
     with session.post(endpoint, json=payload, stream=True) as response:
@@ -105,12 +112,14 @@ def get_agent_response(endpoint: str, conversation_history: list):
 def main():
     """Main chat loop."""
     try:
+        print(f"Starting chat session with ID: {SESSION_ID}")
         print("Connecting to agent for introduction...")
         print("\nAgent: ", end="")
         get_agent_response(START_ENDPOINT, [])
         print("\n")
 
         print("Chat session started. Type 'exit' or 'quit' to end.")
+        print(f"Session ID: {SESSION_ID} (for debugging)")
         conversation_history = []
 
         while True:

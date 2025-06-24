@@ -26,6 +26,7 @@ export type Message = BaseMessage | ToolMessage;
 
 export interface PromptPayload {
   messages: Message[];
+  sessionId?: string;
   model?: string;
   temperature?: number;
   max_tokens?: number;
