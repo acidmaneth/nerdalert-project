@@ -1,178 +1,98 @@
-# NerdAlert Frontend
+# NerdAlert Cyberpunk Chat Interface
 
-A modern, responsive React frontend for the NerdAlert AI agent. Built with TypeScript, Vite, and React 19, providing an intuitive chat interface for pop-culture enthusiasts to interact with the NerdAlert AI.
+A cyberpunk-themed chat interface for the NerdAlert AI agent with Ethereum wallet integration.
 
-## 🎯 Features
+## Features
 
-- **Modern React 19**: Built with the latest React features and hooks
-- **TypeScript**: Full type safety and better developer experience
-- **Vite**: Lightning-fast development server and build tooling
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
-- **Real-time Chat**: Interactive chat interface with the NerdAlert AI agent
-- **Proxy Integration**: Seamless communication with the backend API
-- **Hot Module Replacement**: Instant updates during development
-- **ESLint Configuration**: Code quality and consistency enforcement
+- Cyberpunk pixel art design with neon colors and animations
+- Real-time chat with NerdAlert AI agent
+- WalletConnect integration for Ethereum wallets
+- Sidebar chat management with new chat functionality
+- Mobile-responsive design
+- In-memory message storage
 
-## 🚀 Quick Start
+## Deployment Options
 
-### Prerequisites
+### Option 1: EternalAI Network (Recommended)
 
-- [Node.js](https://nodejs.org/) (version 18 or higher)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-- [NerdAlert Agent](https://github.com/acidmaneth/nerdalert-project) running on `localhost:80`
+Deploy your NerdAlert agent on the EternalAI decentralized network for 24/7 availability:
 
-### Installation
+1. **Prepare your agent for EternalAI:**
+   - Follow EternalAI documentation to containerize your NerdAlert agent
+   - Deploy to their network using their CLI/SDK
+   - Get your agent's EternalAI endpoint URL
 
-1. **Clone the repository**:
+2. **Configure this frontend:**
+   - Set `NERDALERT_API_URL` to your EternalAI agent endpoint
+   - Deploy this chat interface on Replit
+
+3. **Benefits:**
+   - 24/7 availability without keeping your machine on
+   - Decentralized infrastructure
+   - Automatic scaling and redundancy
+   - Pay-per-use model
+
+### Option 2: Traditional Cloud Deployment
+
+1. **Deploy your NerdAlert agent separately** (Railway, Render, Fly.io, etc.)
+2. **Set the API URL:**
+   - Set environment variable: `NERDALERT_API_URL=https://your-agent-url.com`
+3. **Deploy this frontend** on Replit
+
+### Option 3: Local Development with Tunneling
+
+For testing with your local agent:
+
+1. **Expose your local agent:**
    ```bash
-   git clone https://github.com/acidmaneth/nerdalert-project.git
-   cd nerdalert-project/nerdalert-frontend
+   # Install ngrok: https://ngrok.com/
+   ngrok http 80
    ```
 
-2. **Install dependencies**:
+2. **Set the tunnel URL:**
    ```bash
-   npm install
-   # or
-   yarn install
+   export NERDALERT_API_URL=https://your-ngrok-url.ngrok.io
    ```
 
-3. **Start the development server**:
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-4. **Open your browser**:
-   Navigate to `http://localhost:5173`
-
-## 🛠️ Development
-
-### Available Scripts
-
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-- `npm run lint` - Run ESLint for code quality
-
-### Project Structure
-
-```
-nerdalert-frontend/
-├── public/              # Static assets
-├── src/
-│   ├── assets/          # Images, icons, and other assets
-│   ├── components/      # React components
-│   ├── App.tsx          # Main application component
-│   ├── main.tsx         # Application entry point
-│   └── index.css        # Global styles
-├── package.json         # Dependencies and scripts
-├── vite.config.ts       # Vite configuration
-├── tsconfig.json        # TypeScript configuration
-└── eslint.config.js     # ESLint configuration
-```
-
-### API Integration
-
-The frontend is configured to communicate with the NerdAlert agent backend:
-
-- **Development**: Proxies `/prompt-sync` requests to `http://localhost:80`
-- **Production**: Configure the proxy target in `vite.config.ts`
-
-### Configuration
-
-#### Vite Configuration
-```typescript
-// vite.config.ts
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    proxy: {
-      '/prompt-sync': 'http://localhost:80', // Backend API
-    },
-  },
-})
-```
-
-## 🎨 Customization
-
-### Styling
-The application uses CSS modules and global styles. You can customize:
-
-- **Global styles**: Edit `src/index.css`
-- **Component styles**: Create CSS modules for individual components
-- **Theme**: Modify color variables and design tokens
-
-### Components
-The frontend is built with modular React components. Key components include:
-
-- **Chat Interface**: Main chat component for AI interactions
-- **Message Components**: Individual message display components
-- **Input Components**: User input and form handling
-
-## 🚀 Deployment
-
-### Build for Production
-```bash
-npm run build
-```
-
-This creates a `dist/` folder with optimized production files.
-
-### Deploy Options
-
-1. **Static Hosting**: Deploy the `dist/` folder to services like:
-   - Vercel
-   - Netlify
-   - GitHub Pages
-   - AWS S3
-
-2. **Docker**: Create a Dockerfile for containerized deployment
-
-3. **CDN**: Serve static files through a CDN for better performance
+## Configuration
 
 ### Environment Variables
 
-Create a `.env` file for environment-specific configuration:
+- `NERDALERT_API_URL` - URL of your NerdAlert agent API 
+  - EternalAI endpoint: `https://your-agent-id.eternalai.network`
+  - Local development: `http://localhost:80` (default)
+  - Traditional cloud: `https://your-deployed-agent.com`
 
-```env
-VITE_API_URL=http://localhost:80
-VITE_APP_TITLE=NerdAlert
+### WalletConnect Setup
+
+1. Get a free project ID from https://cloud.walletconnect.com
+2. Replace `demo-project-id-placeholder` in `client/src/lib/wallet-config.ts`
+
+## Local Development
+
+```bash
+npm install
+npm run dev
 ```
 
-## 🤝 Contributing
+The frontend will be available at http://localhost:5000
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## API Integration
 
-### Development Guidelines
+The frontend expects your NerdAlert agent to have a `/prompt-sync` endpoint that accepts:
 
-- Follow TypeScript best practices
-- Write meaningful commit messages
-- Add tests for new features
-- Update documentation as needed
-- Follow the existing code style
+```json
+{
+  "messages": [
+    {"role": "user", "content": "Hello"}
+  ]
+}
+```
 
-## 📝 License
+And returns:
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🔗 Related Projects
-
-- [NerdAlert Agent](https://github.com/acidmaneth/nerdalert-project) - The AI agent backend
-- [LocalAI Integration](https://github.com/go-skynet/LocalAI) - Local AI inference
-
-## 🆘 Support
-
-If you encounter any issues or have questions:
-
-1. Check the [Issues](https://github.com/acidmaneth/nerdalert-project/issues) page
-2. Create a new issue with detailed information
-3. Join our community discussions
-
----
-
-**Built with ❤️ for the nerd community**
+```json
+{
+  "response": "AI response text"
+}
+```
