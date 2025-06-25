@@ -55,6 +55,48 @@ The LocalAI Chat UI is just for direct model testing and is optional.
 
 ---
 
+## 2.5. **Ngrok Tunnel Setup (For External Access)**
+
+### Install Ngrok (if not already installed)
+```bash
+# Install via Homebrew
+brew install ngrok
+
+# OR download from https://ngrok.com/download
+```
+
+### Create Tunnel for NerdAlert Agent
+```bash
+# In a new terminal window (after starting your agent)
+ngrok http 80
+
+# This will give you a public URL like: https://abc123.ngrok.io
+# Use this URL for external access to your local agent
+```
+
+### Create Tunnel for NerdAlert Frontend
+```bash
+# In another terminal window (after starting your frontend)
+ngrok http 5000
+
+# This will give you a public URL like: https://xyz789.ngrok.io
+# Use this URL for external access to your local frontend
+```
+
+### Use Cases
+- **Testing on mobile devices** - Access your local setup from your phone
+- **Sharing with others** - Let friends test your NerdAlert setup
+- **Webhook testing** - Test integrations that need public URLs
+- **Development collaboration** - Share your work-in-progress
+
+### Important Notes
+- **Free ngrok accounts** have limited connections and URLs change each time
+- **Paid ngrok accounts** get fixed URLs and more connections
+- **Always keep ngrok running** while you need external access
+- **Update your frontend config** to point to the ngrok URL if needed
+
+---
+
 ## 3. Local AI Chat UI
 
 ### Activate Environment & Start AI Model
