@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const AGENT_URL = process.env.AGENT_URL || 'http://localhost:80';
 const SESSION_ID = `test_session_${Date.now()}`;

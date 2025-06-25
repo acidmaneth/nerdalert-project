@@ -13,7 +13,12 @@ const port = PORT;
 
 // Security middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json({ limit: "50mb" }));
 
 // Basic health check
@@ -106,7 +111,64 @@ const handlePrompt = async (req: Request, res: StreamResponse) => {
   }
 };
 
+// Non-streaming handler for frontend compatibility
+const handlePromptSync = async (req: Request, res: Response) => {
+  const payload: ExtendedPromptPayload = req.body;
+  try {
+    if (!!payload.ping) {
+      res.json({ status: "online" });
+    } else {
+      console.log("Starting non-streaming response");
+      const result = await prompt(payload);
+
+      if (result && typeof result === "object" && "getReader" in result) {
+        // Convert stream to string for non-streaming response
+        const reader = (result as ReadableStream).getReader();
+        let fullResponse = "";
+        
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            // Convert the chunk to string and extract content
+            const chunk = new TextDecoder().decode(value);
+            const lines = chunk.split('\n');
+            
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                const data = line.slice(6);
+                if (data === '[DONE]') continue;
+                
+                try {
+                  const parsed = JSON.parse(data);
+                  if (parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content) {
+                    fullResponse += parsed.choices[0].delta.content;
+                  }
+                } catch (e) {
+                  // Skip invalid JSON
+                }
+              }
+            }
+          }
+        } finally {
+          reader.releaseLock();
+        }
+        
+        res.json({ text: fullResponse });
+      } else {
+        // Direct response
+        res.json({ text: result });
+      }
+    }
+  } catch (error) {
+    console.log("prompt-sync: error", error);
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
+
 app.post("/prompt", handlePrompt);
+app.post("/prompt-sync", handlePromptSync);
 
 app.post("/start", (req: Request, res: StreamResponse) => {
   // Use the same handler as /prompt, but with an empty message payload
