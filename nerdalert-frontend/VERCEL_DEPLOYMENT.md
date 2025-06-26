@@ -64,11 +64,11 @@ In your **Vercel Dashboard > Project Settings > Environment Variables**, add:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `NERDALERT_API_URL` | Your NerdAlert Agent API URL | `https://your-agent-domain.com` |
-| `WALLETCONNECT_PROJECT_ID` | WalletConnect Project ID | `abc123def456ghi789` |
+| `VITE_NERDALERT_API_URL` | Your NerdAlert Agent API URL | `https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app` |
+| `WALLETCONNECT_PROJECT_ID` | WalletConnect Project ID | `your_project_id_here` |
 | `VITE_APP_TITLE` | App title | `NerdAlert Chat` |
 | `VITE_APP_DESCRIPTION` | App description | `Cyberpunk AI Chat Interface` |
-| `VITE_API_BASE_URL` | API base URL | `http://localhost:80` |
+| `VITE_API_BASE_URL` | API base URL | `https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app` |
 | `VITE_SHOW_WALLET` | Show WalletConnect | `false` |
 
 ### Environment Variable Examples
@@ -85,11 +85,11 @@ VITE_SHOW_WALLET=false
 
 #### For Production with Ngrok
 ```bash
-NERDALERT_API_URL=https://your-ngrok-url.ngrok.io
+VITE_NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
 WALLETCONNECT_PROJECT_ID=your_project_id_here
 VITE_APP_TITLE=NerdAlert Chat
 VITE_APP_DESCRIPTION=Cyberpunk AI Chat Interface
-VITE_API_BASE_URL=https://your-ngrok-url.ngrok.io
+VITE_API_BASE_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
 VITE_SHOW_WALLET=false
 ```
 
