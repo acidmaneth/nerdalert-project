@@ -1,0 +1,21 @@
+node_modules
+dist
+.DS_Store
+server/public
+vite.config.ts.*
+*.tar.gz
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Replit specific
+.replit
+replit.nix
+
+# Temporary files
+setup-tunnel.md
+
+# GitHub upload instructions
+README-GITHUB.md

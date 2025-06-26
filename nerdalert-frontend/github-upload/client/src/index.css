@@ -1,0 +1,255 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(120, 100%, 50%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(120, 100%, 50%);
+  --card: hsl(240, 3.7%, 15.9%);
+  --card-foreground: hsl(120, 100%, 50%);
+  --border: hsl(180, 100%, 50%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(180, 100%, 50%);
+  --primary-foreground: hsl(240, 10%, 3.9%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(120, 100%, 50%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(120, 100%, 50%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(180, 100%, 50%);
+  --radius: 0rem;
+  
+  /* Cyberpunk color palette */
+  --cyber-black: hsl(240, 10%, 3.9%);
+  --cyber-dark: hsl(225, 39%, 11%);
+  --cyber-gray: hsl(240, 6%, 16%);
+  --neon-cyan: hsl(180, 100%, 50%);
+  --neon-magenta: hsl(320, 100%, 50%);
+  --neon-green: hsl(120, 100%, 50%);
+  --terminal-green: hsl(120, 100%, 50%);
+  --neon-orange: hsl(20, 100%, 60%);
+  --cyber-blue: hsl(220, 100%, 50%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(120, 100%, 50%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(120, 100%, 50%);
+  --card: hsl(240, 3.7%, 15.9%);
+  --card-foreground: hsl(120, 100%, 50%);
+  --border: hsl(180, 100%, 50%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(180, 100%, 50%);
+  --primary-foreground: hsl(240, 10%, 3.9%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(120, 100%, 50%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(120, 100%, 50%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(180, 100%, 50%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-mono antialiased bg-background text-foreground;
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    background-color: var(--cyber-black);
+    color: var(--terminal-green);
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', monospace;
+  }
+}
+
+/* Cyberpunk custom styles */
+.cyber-font {
+  font-family: 'Orbitron', monospace;
+}
+
+.terminal-font {
+  font-family: 'Courier Prime', 'Courier New', monospace;
+}
+
+.text-glow {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+}
+
+.border-glow {
+  box-shadow: 0 0 20px var(--neon-cyan);
+}
+
+.scanlines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    transparent 0%,
+    rgba(0, 255, 0, 0.03) 50%,
+    transparent 51%,
+    rgba(0, 255, 0, 0.03) 100%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Animations */
+@keyframes glow {
+  0% { box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor; }
+  100% { box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor; }
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.4; }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes typing {
+  0%, 60% { opacity: 1; }
+  30% { opacity: 0; }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.animate-flicker {
+  animation: flicker 3s linear infinite;
+}
+
+.animate-scanline {
+  animation: scanline 2s linear infinite;
+}
+
+.animate-glitch {
+  animation: glitch 0.3s ease-in-out;
+}
+
+.animate-typing {
+  animation: typing 1.5s ease-in-out infinite;
+}
+
+.message-enter {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.terminal-cursor::after {
+  content: '█';
+  animation: typing 1s infinite;
+  color: var(--neon-green);
+}
+
+/* Scrollbar styling */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: var(--cyber-gray);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--neon-cyan);
+  border-radius: 0;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-magenta);
+}
+
+/* Pixel perfect borders */
+.pixel-border {
+  border-image: linear-gradient(45deg, var(--neon-cyan), var(--neon-magenta)) 1;
+  border-style: solid;
+  border-width: 2px;
+}
+
+/* Pixelated image rendering */
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.retro-button:hover {
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+/* Custom input styling */
+.cyber-input {
+  background-color: var(--cyber-black);
+  border: 1px solid var(--neon-cyan);
+  color: var(--terminal-green);
+  font-family: 'Courier Prime', monospace;
+}
+
+.cyber-input:focus {
+  outline: none;
+  border-color: var(--neon-magenta);
+  box-shadow: 0 0 10px var(--neon-magenta);
+}
+
+.cyber-input::placeholder {
+  color: hsl(240, 5%, 64.9%);
+}
+
+/* Button styles */
+.cyber-button {
+  background: linear-gradient(45deg, var(--neon-cyan), var(--neon-magenta));
+  color: var(--cyber-black);
+  border: 1px solid var(--neon-cyan);
+  font-family: 'Orbitron', monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.cyber-button:hover {
+  border-color: var(--neon-magenta);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px var(--neon-magenta);
+}
