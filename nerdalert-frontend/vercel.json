@@ -4,6 +4,11 @@
   "outputDirectory": "dist/public",
   "installCommand": "npm install --legacy-peer-deps --force",
   "framework": "vite",
+  "functions": {
+    "server/index.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "routes": [
     {
       "src": "/(.*)",
