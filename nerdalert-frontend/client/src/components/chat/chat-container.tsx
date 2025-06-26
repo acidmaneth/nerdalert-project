@@ -6,6 +6,7 @@ import NerdAlertAvatar from "./nerdalert-avatar";
 import ChatSidebar from "./chat-sidebar";
 import WalletButton from "../wallet/wallet-button";
 import { sendMessage, getMessages, clearMessages } from "@/lib/chat-api";
+import { apiRequest } from "@/lib/queryClient";
 import type { Message } from "@shared/schema";
 
 export default function ChatContainer() {
@@ -78,14 +79,12 @@ export default function ChatContainer() {
   // On first load, call the agent's /start endpoint for a real intro
   useEffect(() => {
     if (localMessages.length === 0 && !isLoading) {
-      const apiBase = import.meta.env.VITE_NERDALERT_API_URL || "http://localhost:80";
-      fetch(`${apiBase}/start`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [] }),
-      })
-        .then(res => res.json())
-        .then(data => {
+      // Use the proper API request function
+      const getAgentIntro = async () => {
+        try {
+          const response = await apiRequest("POST", "/start", { messages: [] });
+          const data = await response.json();
+          
           // Add the agent's real response to the chat
           const assistantMessage: Message = {
             id: Date.now(),
@@ -94,8 +93,7 @@ export default function ChatContainer() {
             timestamp: new Date(),
           };
           setLocalMessages([assistantMessage]);
-        })
-        .catch(error => {
+        } catch (error) {
           console.error("Failed to get agent intro:", error);
           // Fallback message
           const assistantMessage: Message = {
@@ -105,7 +103,10 @@ export default function ChatContainer() {
             timestamp: new Date(),
           };
           setLocalMessages([assistantMessage]);
-        });
+        }
+      };
+      
+      getAgentIntro();
     }
   }, [localMessages.length, isLoading]);
 
