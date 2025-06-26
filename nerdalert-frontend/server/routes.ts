@@ -72,10 +72,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Store AI response
         const aiMessage = await storage.createMessage({
           role: "assistant",
-          content: data.response || "I apologize, but I couldn't generate a response.",
+          content: data.text || data.response || "I apologize, but I couldn't generate a response.",
         });
 
-        res.json({ response: data.response || "I apologize, but I couldn't generate a response." });
+        res.json({ response: data.text || data.response || "I apologize, but I couldn't generate a response." });
       } catch (apiError) {
         // Fallback response when backend is unavailable
         const fallbackResponse = "SYSTEM ERROR: Unable to connect to NerdAlert neural network. The cyberpunk AI is currently offline. Please try again later.";

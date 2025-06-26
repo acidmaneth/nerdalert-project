@@ -75,7 +75,7 @@ npm install
 npm run dev
 ```
 
-The frontend will be available at http://localhost:5000
+The frontend will be available at http://localhost:5050
 
 ## API Integration
 
@@ -96,3 +96,14 @@ And returns:
   "response": "AI response text"
 }
 ```
+
+## Updated Environment Variables
+
+- `NERDALERT_API_URL` - URL of your NerdAlert agent API 
+  - EternalAI endpoint: `https://your-agent-id.eternalai.network`
+  - Local development: `http://localhost:80` (default)
+  - Traditional cloud: `https://your-deployed-agent.com`
+
+- `VITE_API_BASE_URL` - Base URL for API requests
+  - Local development: `http://localhost:80`
+  - Traditional cloud: `https://your-deployed-agent.com`

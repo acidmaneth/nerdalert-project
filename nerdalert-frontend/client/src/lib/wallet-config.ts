@@ -4,8 +4,11 @@ import { WagmiProvider } from 'wagmi'
 import { arbitrum, mainnet, polygon, base, optimism } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-// Get projectId from https://cloud.walletconnect.com
-const projectId = 'demo-project-id-placeholder'
+// 🔑 Get your Project ID from https://cloud.walletconnect.com
+// 1. Go to https://cloud.walletconnect.com
+// 2. Sign up/login and create a new project
+// 3. Copy your Project ID and replace this placeholder
+const projectId = '84d9f66af3cb6c54297d3995d1c1920f' // ← Replace with your real Project ID
 
 const metadata = {
   name: 'NerdAlert Crypto Agent',
@@ -26,11 +29,13 @@ export const config = defaultWagmiConfig({
 })
 
 // Create modal
-createWeb3Modal({
-  wagmiConfig: config,
-  projectId,
-  enableAnalytics: true, // Optional - defaults to your Cloud configuration
-  enableOnramp: true // Optional - false as default
-})
+if (import.meta.env.VITE_SHOW_WALLET !== 'false') {
+  createWeb3Modal({
+    wagmiConfig: config,
+    projectId,
+    enableAnalytics: true, // Optional - defaults to your Cloud configuration
+    enableOnramp: true // Optional - false as default
+  });
+}
 
 export { projectId }

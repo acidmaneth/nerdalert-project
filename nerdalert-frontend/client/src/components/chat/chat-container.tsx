@@ -16,7 +16,7 @@ export default function ChatContainer() {
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ["/api/messages"],
     refetchInterval: false,
-  });
+  }) as { data: Message[]; isLoading: boolean };
 
   const sendMessageMutation = useMutation({
     mutationFn: sendMessage,
@@ -34,11 +34,11 @@ export default function ChatContainer() {
 
   const handleSendMessage = async (content: string) => {
     const chatMessages = [
-      ...messages.map((msg: Message) => ({
-        role: msg.role,
+      ...((messages as Message[]) ?? []).map((msg: Message) => ({
+        role: msg.role as 'user' | 'assistant' | 'system',
         content: msg.content,
       })),
-      { role: "user", content },
+      { role: 'user' as const, content },
     ];
 
     await sendMessageMutation.mutateAsync({ messages: chatMessages });
@@ -59,22 +59,21 @@ export default function ChatContainer() {
     // In a real app, you'd load messages for the selected chat
   };
 
-  // Add welcome message on first load
+  // On first load, call the agent's /start endpoint for a real intro
   useEffect(() => {
-    if (messages.length === 0 && !isLoading) {
-      // Add welcome message directly via storage API
-      fetch("/api/messages", {
+    if ((messages as Message[]).length === 0 && !isLoading) {
+      fetch((import.meta.env.NERDALERT_API_URL || "/api") + "/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          role: "assistant",
-          content: "> WELCOME TO THE NEURAL INTERFACE\n> I'M NERDALERT, YOUR CYBERPUNK AI COMPANION\n> READY TO DISCUSS POP CULTURE, TECH, COMICS & MORE\n> TYPE YOUR QUERY TO BEGIN..."
-        }),
-      }).then(() => {
-        queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
-      });
+        body: JSON.stringify({ messages: [] }),
+      })
+        .then(res => res.json())
+        .then(data => {
+          // Add the agent's real response to the chat
+          sendMessageMutation.mutate({ messages: [{ role: "assistant", content: data.text || data.response }] });
+        });
     }
-  }, [messages.length, isLoading, queryClient]);
+  }, [(messages as Message[]).length, isLoading]);
 
   return (
     <div className="flex flex-col h-screen">
@@ -93,7 +92,7 @@ export default function ChatContainer() {
               </div>
             </div>
             <div className="flex-1 flex justify-end items-center space-x-4">
-              <WalletButton />
+              {import.meta.env.VITE_SHOW_WALLET !== 'false' && <WalletButton />}
               <ChatSidebar 
                 onNewChat={handleNewChat}
                 onSelectChat={handleSelectChat}

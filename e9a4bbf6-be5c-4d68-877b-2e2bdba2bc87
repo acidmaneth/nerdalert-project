@@ -57,6 +57,15 @@ The LocalAI Chat UI is just for direct model testing and is optional.
 
 ## 2.5. **Ngrok Tunnel Setup (For External Access)**
 
+### Current Agent Tunnel (Active)
+```bash
+# Your current agent tunnel is running:
+https://183a-149-88-18-151.ngrok-free.app -> http://localhost:80
+
+# Use this URL for your NERDALERT_API_URL:
+NERDALERT_API_URL=https://183a-149-88-18-151.ngrok-free.app
+```
+
 ### Install Ngrok (if not already installed)
 ```bash
 # Install via Homebrew
@@ -83,6 +92,15 @@ ngrok http 5000
 # Use this URL for external access to your local frontend
 ```
 
+### Environment Variable Configuration
+```bash
+# For your frontend, set this environment variable:
+NERDALERT_API_URL=https://183a-149-88-18-151.ngrok-free.app
+
+# For local development:
+NERDALERT_API_URL=http://localhost:80
+```
+
 ### Use Cases
 - **Testing on mobile devices** - Access your local setup from your phone
 - **Sharing with others** - Let friends test your NerdAlert setup
@@ -94,6 +112,7 @@ ngrok http 5000
 - **Paid ngrok accounts** get fixed URLs and more connections
 - **Always keep ngrok running** while you need external access
 - **Update your frontend config** to point to the ngrok URL if needed
+- **Current tunnel expires** when you restart ngrok - you'll get a new URL
 
 ---
 
@@ -164,6 +183,15 @@ npm run dev
 - Modern React chat interface with cyberpunk theme
 - WalletConnect integration for Ethereum wallets
 - Sidebar chat management with new chat functionality
+
+### Configure API URL
+```bash
+# For local development:
+NERDALERT_API_URL=http://localhost:80
+
+# For external access (current tunnel):
+NERDALERT_API_URL=https://183a-149-88-18-151.ngrok-free.app
+```
 
 ### Customize Frontend
 - Edit client/src/components/ for UI changes
