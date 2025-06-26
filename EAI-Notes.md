@@ -1,0 +1,209 @@
+# EAI Project - Quick Guides
+
+#MacStudio IP
+192.168.1.205
+
+---
+
+## 1. **Kill/Cleanup Commands (Always Run First if Needed)**
+
+```bash
+# Run the automated cleanup script (kills all relevant ports/processes)
+cd /Users/acidman/EAI
+./cleanup-local-ai.sh
+
+# Manual port kills (if needed)
+lsof -ti:8080 | xargs kill -9   # LocalAI backend
+lsof -ti:5050 | xargs kill -9   # NerdAlert Frontend (if running on 5050)
+lsof -ti:80   | xargs kill -9   # NerdAlert Agent (if running on port 80)
+```
+
+---
+
+## 2. **QuickStart: Start the Full Stack (in order)**
+
+### 1. **Start LocalAI backend**
+```bash
+cd /Users/acidman/EAI/local-ai
+source local_ai/bin/activate
+local-ai start --hash bafkreid5z4lddvv4qbgdlz2nqo6eumxwetwmkpesrumisx72k3ahq73zpy
+```
+
+### 2. **Start NerdAlert Agent**
+```bash
+cd /Users/acidman/EAI/NerdAlert/agent
+npm run dev
+```
+
+### 3. **Start NerdAlert Frontend**
+```bash
+cd /Users/acidman/EAI/NerdAlert/frontend
+npm install   # (first time only, or after updates)
+npm run dev
+```
+- The frontend will be available at: [http://localhost:5000](http://localhost:5000) (or as specified in your config)
+
+### 4. **(Optional) Open LocalAI Chat UI**
+```bash
+open /Users/acidman/EAI/local-ai/chat_ui.html
+```
+
+---
+
+**You always need the first three running for the full NerdAlert experience.**  
+The LocalAI Chat UI is just for direct model testing and is optional.
+
+---
+
+## 2.5. **Ngrok Tunnel Setup (For External Access)**
+
+### Current Agent Tunnel (Active)
+```bash
+# Your current agent tunnel is running:
+https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app -> http://localhost:80
+
+# Use this URL for your NERDALERT_API_URL:
+NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
+```
+
+### Install Ngrok (if not already installed)
+```bash
+# Install via Homebrew
+brew install ngrok
+
+# OR download from https://ngrok.com/download
+```
+
+### Create Tunnel for NerdAlert Agent
+```bash
+# In a new terminal window (after starting your agent)
+ngrok http 80
+
+# This will give you a public URL like: https://abc123.ngrok.io
+# Use this URL for external access to your local agent
+```
+
+### Create Tunnel for NerdAlert Frontend
+```bash
+# In another terminal window (after starting your frontend)
+ngrok http 5000
+
+# This will give you a public URL like: https://xyz789.ngrok.io
+# Use this URL for external access to your local frontend
+```
+
+### Environment Variable Configuration
+```bash
+# For your frontend, set this environment variable:
+NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
+
+# For local development:
+NERDALERT_API_URL=http://localhost:80
+```
+
+### Use Cases
+- **Testing on mobile devices** - Access your local setup from your phone
+- **Sharing with others** - Let friends test your NerdAlert setup
+- **Webhook testing** - Test integrations that need public URLs
+- **Development collaboration** - Share your work-in-progress
+
+### Important Notes
+- **Free ngrok accounts** have limited connections and URLs change each time
+- **Paid ngrok accounts** get fixed URLs and more connections
+- **Always keep ngrok running** while you need external access
+- **Update your frontend config** to point to the ngrok URL if needed
+- **Current tunnel expires** when you restart ngrok - you'll get a new URL
+
+---
+
+## 3. Local AI Chat UI
+
+### Activate Environment & Start AI Model
+cd /Users/acidman/EAI/local-ai
+source local_ai/bin/activate
+local-ai start --hash bafkreid5z4lddvv4qbgdlz2nqo6eumxwetwmkpesrumisx72k3ahq73zpy
+
+# Kill process on port 8080
+lsof -ti:8080 | xargs kill -9
+
+### Open Chat UI
+- Double-click chat_ui.html in Finder
+- OR: open /Users/acidman/EAI/local-ai/chat_ui.html
+
+### Use Chat
+- Type message → press Enter
+- Click 📷 to upload images
+- Shift+Enter for new lines
+   python3 /Users/acidman/EAI/NerdAlert/agent/chat.py
+
+### Troubleshoot
+- local-ai status (check if running)
+- local-ai stop (then restart if needed)
+- Wait 30-60 seconds for model to load
+
+---
+
+## 4. NerdAlert Agent
+
+### Setup (first time only)
+cd /Users/acidman/EAI/NerdAlert/agent
+npm install
+
+### Start Agent
+npm run dev
+
+### Use Agent
+- Runs on http://localhost:80
+- Send POST requests to /prompt
+- Edit src/system-prompt.txt to customize personality
+
+### Example API Call
+curl --location 'http://localhost:80/prompt' \
+--header 'Content-Type: application/json' \
+--data '{"messages": [{"role": "user", "content": "What are the latest Marvel movie updates?"}]}'
+
+### Customize Agent
+- Edit src/system-prompt.txt for personality changes
+- Modify src/prompt/index.ts for functionality
+- Add new tools in src/prompt/index.ts
+
+---
+
+## 5. NerdAlert Frontend
+
+### Setup (first time only)
+cd /Users/acidman/EAI/NerdAlert/frontend
+npm install
+
+### Start Frontend
+npm run dev
+
+### Use Frontend
+- Runs on http://localhost:5000 (or as configured)
+- Modern React chat interface with cyberpunk theme
+- WalletConnect integration for Ethereum wallets
+- Sidebar chat management with new chat functionality
+
+### Configure API URL
+```bash
+# For local development:
+NERDALERT_API_URL=http://localhost:80
+
+# For external access (current tunnel):
+NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
+```
+
+### Customize Frontend
+- Edit client/src/components/ for UI changes
+- Modify client/src/lib/chat-api.ts for API configuration
+- Update client/src/lib/wallet-config.ts for wallet settings
+
+---
+
+## Quick Commands (optional aliases for ~/.zshrc)
+alias start-ai="cd /Users/acidman/EAI/local-ai && source local_ai/bin/activate && local-ai start --hash bafkreid5z4lddvv4qbgdlz2nqo6eumxwetwmkpesrumisx72k3ahq73zpy"
+alias open-chat="open /Users/acidman/EAI/local-ai/chat_ui.html"
+alias ai-status="local-ai status"
+alias start-nerdalert="cd /Users/acidman/EAI/NerdAlert/agent && npm run dev"
+alias start-frontend="cd /Users/acidman/EAI/NerdAlert/frontend && npm run dev"
+alias cleanup-ai="cd /Users/acidman/EAI && ./cleanup-local-ai.sh" 
