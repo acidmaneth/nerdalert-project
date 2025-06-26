@@ -21,8 +21,9 @@ app.use(cors({
     'http://localhost:5174',
     'http://127.0.0.1:5173',
     'http://127.0.0.1:5174',
+    'https://nerdalert.app',
+    'https://www.nerdalert.app',
     'https://nerdalert-project-bv65gtuat-acidmans-projects.vercel.app',
-    'https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app',
     'https://nerdalert-project-omvaz9rgu-acidmans-projects.vercel.app'
   ],
   credentials: true,
