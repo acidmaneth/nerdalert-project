@@ -1,4 +1,4 @@
-import { NerdAlertKnowledgeBase, KnowledgeEntry, RAGQuery } from './knowledge-base';
+import { NerdAlertKnowledgeBase, KnowledgeEntry, RAGQuery } from './knowledge-base.js';
 
 export class RAGService {
   private knowledgeBase: NerdAlertKnowledgeBase;

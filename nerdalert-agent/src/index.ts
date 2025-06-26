@@ -3,10 +3,10 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import helmet from "helmet";
 
-import { prompt } from "./prompt/index";
-import type { PromptPayload } from "./prompt/types";
-import { conversationMemory } from "./prompt/conversation-memory";
-import { PORT, NODE_ENV } from "./constants";
+import { prompt } from "./prompt/index.js";
+import type { PromptPayload } from "./prompt/types.js";
+import { conversationMemory } from "./prompt/conversation-memory.js";
+import { PORT, NODE_ENV } from "./constants.js";
 
 const app = express();
 const port = PORT;
@@ -223,7 +223,7 @@ app.get("/memory", (req: Request, res: Response) => {
 });
 
 // Global error handler
-app.use((err: Error, req: Request, res: Response) => {
+app.use((err: Error, req: Request, res: Response, next: Function) => {
   console.error("Unhandled error:", err);
   res.status(500).json({
     error: err.message,

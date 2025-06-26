@@ -373,3 +373,14 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 **Made with ❤️ for the geek community**
+
+## [1.3.3] - 2024-07-26
+
+### ✨ Stable Build & Streaming UX Polish
+- Main chat bubble now only shows content after the last </think> tag, preserving all formatting and markdown.
+- "Thinking"/internal agent thoughts are never shown in the main chat bubble, only in the collapsible "Show Thinking" section.
+- The "THINKING..." animation is shown while the agent is still thinking, and the main answer appears as soon as it starts streaming in.
+- The welcome/intro message is always shown in full, with all formatting preserved.
+- This is the **current stable build** and recommended for production use.
+
+---

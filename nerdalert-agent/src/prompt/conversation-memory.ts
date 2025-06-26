@@ -1,3 +1,5 @@
+import type { PromptPayload } from "./types.js";
+
 export interface ConversationMemory {
   sessionId: string;
   discussedTopics: Set<string>;

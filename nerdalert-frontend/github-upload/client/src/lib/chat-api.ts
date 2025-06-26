@@ -1,5 +1,16 @@
 import { apiRequest } from "./queryClient";
 
+const getApiBase = () => {
+  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_NERDALERT_API_URL) {
+    return import.meta.env.VITE_NERDALERT_API_URL;
+  }
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return 'http://localhost:80';
+  }
+  return 'https://nerdalert.app';
+};
+const API_BASE = getApiBase();
+
 export interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
@@ -13,9 +24,69 @@ export interface SendMessageResponse {
   response: string;
 }
 
-export async function sendMessage(request: SendMessageRequest): Promise<SendMessageResponse> {
-  const response = await apiRequest("POST", "/api/prompt-sync", request);
-  return response.json();
+// Function to clean message content by removing internal thinking tags
+const cleanMessageContent = (content: string): string => {
+  return content
+    .replace(/<think>[\s\S]*?<\/think>/g, '') // Remove <think> tags and their content
+    .replace(/<processing>[\s\S]*?<\/processing>/g, '') // Remove <processing> tags
+    .replace(/<analysis>[\s\S]*?<\/analysis>/g, '') // Remove <analysis> tags
+    .replace(/<internal>[\s\S]*?<\/internal>/g, '') // Remove <internal> tags
+    .replace(/\[THINKING\][\s\S]*?\[\/THINKING\]/g, '') // Remove [THINKING] tags
+    .replace(/\[PROCESSING\][\s\S]*?\[\/PROCESSING\]/g, '') // Remove [PROCESSING] tags
+    .trim(); // Remove extra whitespace
+};
+
+export async function sendMessage(
+  request: SendMessageRequest,
+  onStreamChunk?: (chunk: string) => void
+): Promise<SendMessageResponse> {
+  const response = await fetch(`${API_BASE}/prompt`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.body) throw new Error("No response body");
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let result = "";
+  let buffer = ""; // Buffer for incomplete thinking tags
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value, { stream: true });
+    
+    // Add chunk to buffer and process complete content
+    buffer += chunk;
+    
+    // Parse SSE lines
+    const lines = buffer.split("\n");
+    // Keep the last line in buffer if it's incomplete
+    buffer = lines.pop() || "";
+    
+    for (const line of lines) {
+      if (line.startsWith("data: ")) {
+        const data = line.slice(6);
+        if (data === "[DONE]") continue;
+        try {
+          const parsed = JSON.parse(data);
+          const content = parsed.choices?.[0]?.delta?.content;
+          if (content) {
+            // Clean the content before adding to result
+            const cleanContent = cleanMessageContent(content);
+            if (cleanContent) {
+              result += cleanContent;
+              if (onStreamChunk) onStreamChunk(cleanContent);
+            }
+          }
+        } catch (e) {
+          // Ignore parse errors
+        }
+      }
+    }
+  }
+  return { response: result };
 }
 
 export async function getMessages() {

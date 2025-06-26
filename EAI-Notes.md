@@ -31,17 +31,17 @@ local-ai start --hash bafkreid5z4lddvv4qbgdlz2nqo6eumxwetwmkpesrumisx72k3ahq73zp
 
 ### 2. **Start NerdAlert Agent**
 ```bash
-cd /Users/acidman/EAI/NerdAlert/agent
+cd /Users/acidman/EAI/NerdAlert/nerdalert-agent
 npm run dev
 ```
 
 ### 3. **Start NerdAlert Frontend**
 ```bash
-cd /Users/acidman/EAI/NerdAlert/frontend
+cd /Users/acidman/EAI/NerdAlert/nerdalert-frontend
 npm install   # (first time only, or after updates)
 npm run dev
 ```
-- The frontend will be available at: [http://localhost:5000](http://localhost:5000) (or as specified in your config)
+- The frontend will be available at: [http://localhost:5050](http://localhost:5050) (or as specified in your config)
 
 ### 4. **(Optional) Open LocalAI Chat UI**
 ```bash
@@ -55,64 +55,49 @@ The LocalAI Chat UI is just for direct model testing and is optional.
 
 ---
 
-## 2.5. **Ngrok Tunnel Setup (For External Access)**
+## 2.5. **Frontend Vercel Deployment (For Production)**
 
-### Current Agent Tunnel (Active)
+### Deploy Frontend to Vercel
+1. Go to [vercel.com](https://vercel.com)
+2. Click "New Project"
+3. Import your GitHub repo
+4. Set **Root Directory** to: `NerdAlert/nerdalert-frontend`
+5. Set **Framework Preset** to: `Vite`
+6. Set **Build Command** to: `npm run build`
+7. Set **Output Directory** to: `dist/public`
+8. Set **Install Command** to: `npm install --legacy-peer-deps --force`
+
+### Environment Variables Setup
+
+**For Frontend (in Vercel dashboard):**
 ```bash
-# Your current agent tunnel is running:
-https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app -> http://localhost:80
-
-# Use this URL for your NERDALERT_API_URL:
-NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
+VITE_NERDALERT_API_URL=https://nerdalert.app
+VITE_WALLET_ENABLED=false
+VITE_WALLET_PROJECT_ID=your_wallet_project_id_here
+VITE_WALLET_METADATA_NAME=NerdAlert
+VITE_WALLET_METADATA_DESCRIPTION=Your AI companion for pop-culture
+VITE_WALLET_METADATA_URL=https://nerdalert.app
+VITE_WALLET_METADATA_ICONS=https://nerdalert.app/favicon.ico
+NODE_ENV=production
 ```
 
-### Install Ngrok (if not already installed)
-```bash
-# Install via Homebrew
-brew install ngrok
-
-# OR download from https://ngrok.com/download
-```
-
-### Create Tunnel for NerdAlert Agent
-```bash
-# In a new terminal window (after starting your agent)
-ngrok http 80
-
-# This will give you a public URL like: https://abc123.ngrok.io
-# Use this URL for external access to your local agent
-```
-
-### Create Tunnel for NerdAlert Frontend
-```bash
-# In another terminal window (after starting your frontend)
-ngrok http 5000
-
-# This will give you a public URL like: https://xyz789.ngrok.io
-# Use this URL for external access to your local frontend
-```
-
-### Environment Variable Configuration
-```bash
-# For your frontend, set this environment variable:
-NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
-
-# For local development:
-NERDALERT_API_URL=http://localhost:80
-```
+### Custom Domain Setup
+1. In Vercel dashboard, go to Settings → Domains
+2. Add your domain: `nerdalert.app`
+3. Update DNS records as instructed by Vercel
 
 ### Use Cases
-- **Testing on mobile devices** - Access your local setup from your phone
-- **Sharing with others** - Let friends test your NerdAlert setup
-- **Webhook testing** - Test integrations that need public URLs
-- **Development collaboration** - Share your work-in-progress
+- **Production deployment** - Live, public access to NerdAlert frontend
+- **Custom domains** - Point nerdalert.app to Vercel
+- **Automatic scaling** - Vercel handles traffic spikes
+- **SSL certificates** - Automatic HTTPS
+- **Global CDN** - Fast loading worldwide
 
 ### Important Notes
-- **Free ngrok accounts** have limited connections and URLs change each time
-- **Paid ngrok accounts** get fixed URLs and more connections
-- **Always keep ngrok running** while you need external access
-- **Update your frontend config** to point to the ngrok URL if needed
-- **Current tunnel expires** when you restart ngrok - you'll get a new URL
+- **Environment variables** must be set in Vercel dashboard
+- **Agent stays on Cloudflare** - Frontend calls agent at nerdalert.app
+- **Automatic deployments** when you push to GitHub
+- **Wallet disabled by default** - Set VITE_WALLET_ENABLED=false
 
 ---
 
@@ -134,7 +119,7 @@ lsof -ti:8080 | xargs kill -9
 - Type message → press Enter
 - Click 📷 to upload images
 - Shift+Enter for new lines
-   python3 /Users/acidman/EAI/NerdAlert/agent/chat.py
+   python3 /Users/acidman/EAI/NerdAlert/nerdalert-agent/chat.py
 
 ### Troubleshoot
 - local-ai status (check if running)
@@ -146,7 +131,7 @@ lsof -ti:8080 | xargs kill -9
 ## 4. NerdAlert Agent
 
 ### Setup (first time only)
-cd /Users/acidman/EAI/NerdAlert/agent
+cd /Users/acidman/EAI/NerdAlert/nerdalert-agent
 npm install
 
 ### Start Agent
@@ -172,25 +157,35 @@ curl --location 'http://localhost:80/prompt' \
 ## 5. NerdAlert Frontend
 
 ### Setup (first time only)
-cd /Users/acidman/EAI/NerdAlert/frontend
+cd /Users/acidman/EAI/NerdAlert/nerdalert-frontend
 npm install
 
 ### Start Frontend
 npm run dev
 
 ### Use Frontend
-- Runs on http://localhost:5000 (or as configured)
+- Runs on http://localhost:5050 (or as configured)
 - Modern React chat interface with cyberpunk theme
-- WalletConnect integration for Ethereum wallets
+- WalletConnect integration for Ethereum wallets (disabled by default)
 - Sidebar chat management with new chat functionality
 
 ### Configure API URL
 ```bash
 # For local development:
-NERDALERT_API_URL=http://localhost:80
+VITE_NERDALERT_API_URL=http://localhost:80
 
-# For external access (current tunnel):
-NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
+# For production (Cloudflare):
+VITE_NERDALERT_API_URL=https://nerdalert.app
+```
+
+### Wallet Configuration
+```bash
+# Disable wallet (recommended for production)
+VITE_WALLET_ENABLED=false
+
+# Or enable wallet with project ID
+VITE_WALLET_ENABLED=true
+VITE_WALLET_PROJECT_ID=your_wallet_project_id_here
 ```
 
 ### Customize Frontend
@@ -204,6 +199,6 @@ NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-fre
 alias start-ai="cd /Users/acidman/EAI/local-ai && source local_ai/bin/activate && local-ai start --hash bafkreid5z4lddvv4qbgdlz2nqo6eumxwetwmkpesrumisx72k3ahq73zpy"
 alias open-chat="open /Users/acidman/EAI/local-ai/chat_ui.html"
 alias ai-status="local-ai status"
-alias start-nerdalert="cd /Users/acidman/EAI/NerdAlert/agent && npm run dev"
-alias start-frontend="cd /Users/acidman/EAI/NerdAlert/frontend && npm run dev"
+alias start-nerdalert="cd /Users/acidman/EAI/NerdAlert/nerdalert-agent && npm run dev"
+alias start-frontend="cd /Users/acidman/EAI/NerdAlert/nerdalert-frontend && npm run dev"
 alias cleanup-ai="cd /Users/acidman/EAI && ./cleanup-local-ai.sh" 

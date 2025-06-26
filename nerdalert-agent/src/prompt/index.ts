@@ -5,16 +5,16 @@ import OpenAI from "openai";
 import axios from "axios"; // Import axios
 import { ChatCompletionChunk, ChatCompletionMessageParam } from "openai/resources/chat";
 
-import { PromptPayload } from "./types";
-import { conversationMemory, extractTopicsFromMessage, analyzeAgentResponse } from "./conversation-memory";
-import { RAGService } from "../rag/rag-service";
+import type { PromptPayload } from "./types.js";
+import { conversationMemory, extractTopicsFromMessage, analyzeAgentResponse } from "./conversation-memory.js";
+import { RAGService } from "../rag/rag-service.js";
 import {
   MODEL,
   LLM_API_KEY,
   LLM_BASE_URL,
   SYSTEM_PROMPT,
   SERPER_API_KEY, // Import the new key
-} from "../constants";
+} from "../constants.js";
 
 // Handle import.meta.url for different environments
 let __filename: string = '';
@@ -701,6 +701,30 @@ async function deep_trivia_search(query: string, search_type: string): Promise<s
   return `${resultSummary}${errorSummary}\n\n${snippets || "No results found."}`;
 }
 
+// Replace normalizeMarkdownSpacing with a no-op (identity) function
+function normalizeMarkdownSpacing(text: string): string {
+  return text;
+}
+
+// Update cleanContent to preserve <think> tags while removing other internal tags
+const cleanContent = (content: string): string => {
+  return content
+    .replace(/<processing>[\s\S]*?<\/processing>/g, '')
+    .replace(/<analysis>[\s\S]*?<\/analysis>/g, '')
+    .replace(/<internal>[\s\S]*?<\/internal>/g, '')
+    .replace(/<search>[\s\S]*?<\/search>/g, '')
+    .replace(/<verify>[\s\S]*?<\/verify>/g, '')
+    .replace(/\[THINKING\][\s\S]*?\[\/THINKING\]/g, '')
+    .replace(/\[PROCESSING\][\s\S]*?\[\/PROCESSING\]/g, '')
+    .replace(/\[ANALYSIS\][\s\S]*?\[\/ANALYSIS\]/g, '')
+    .replace(/\[INTERNAL\][\s\S]*?\[\/INTERNAL\]/g, '')
+    .replace(/\*\*THINKING\*\*[\s\S]*?\*\*\/THINKING\*\*/g, '')
+    .replace(/\*\*PROCESSING\*\*[\s\S]*?\*\*\/PROCESSING\*\*/g, '')
+    .replace(/\*\*ANALYSIS\*\*[\s\S]*?\*\*\/ANALYSIS\*\*/g, '')
+    .replace(/\*\*INTERNAL\*\*[\s\S]*?\*\*\/INTERNAL\*\*/g, '');
+    // Note: <think> tags are preserved so frontend can extract thinking content
+};
+
 // Function to capture and store agent response content
 const captureAgentResponse = async (stream: ReadableStream<Uint8Array>, sessionId: string): Promise<ReadableStream<Uint8Array>> => {
   let responseContent = "";
@@ -716,24 +740,48 @@ const captureAgentResponse = async (stream: ReadableStream<Uint8Array>, sessionI
           if (done) break;
           
           const chunk = decoder.decode(value, { stream: true });
-          controller.enqueue(value);
           
-          // Extract content from streaming chunks
+          // Process the chunk to clean content before forwarding
           const lines = chunk.split('\n');
+          let cleanedChunk = '';
+          
           for (const line of lines) {
             if (line.startsWith('data: ')) {
               const data = line.slice(6);
-              if (data === '[DONE]') continue;
+              if (data === '[DONE]') {
+                cleanedChunk += line + '\n';
+                continue;
+              }
               
               try {
                 const parsed = JSON.parse(data);
                 if (parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content) {
-                  responseContent += parsed.choices[0].delta.content;
+                  // Clean any remaining internal tags from the content (but preserve <think> tags)
+                  const cleanDeltaContent = cleanContent(parsed.choices[0].delta.content);
+                  
+                  if (cleanDeltaContent) {
+                    // Update the parsed object with cleaned content
+                    parsed.choices[0].delta.content = cleanDeltaContent;
+                    cleanedChunk += `data: ${JSON.stringify(parsed)}\n\n`;
+                    responseContent += cleanDeltaContent;
+                  }
+                } else {
+                  // Forward non-content chunks as-is
+                  cleanedChunk += line + '\n';
                 }
               } catch (e) {
-                // Ignore parsing errors for incomplete chunks
+                // Forward invalid JSON lines as-is
+                cleanedChunk += line + '\n';
               }
+            } else {
+              // Forward non-data lines as-is
+              cleanedChunk += line + '\n';
             }
+          }
+          
+          // Only enqueue if there's content to send
+          if (cleanedChunk.trim()) {
+            controller.enqueue(new TextEncoder().encode(cleanedChunk));
           }
         }
         

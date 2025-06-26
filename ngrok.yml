@@ -1,8 +1,0 @@
-version: "2"
-tunnels:
-  frontend:
-    addr: 5050
-    proto: http
-  agent:
-    addr: 80
-    proto: http 

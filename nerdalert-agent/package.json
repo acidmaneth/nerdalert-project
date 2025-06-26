@@ -13,14 +13,14 @@
     "node": ">=16"
   },
   "scripts": {
-    "start": "tsx ./src/index.ts",
+    "start": "node dist/index.js",
     "dev": "tsx watch ./src/index.ts",
+    "build": "tsc",
     "test": "jest",
     "test:research": "node test-research.js",
     "test:memory": "node test-memory.js",
     "test:dates": "node test-date-accuracy.js",
     "test:rag": "node test-rag.js",
-    "build": "tsc",
     "clean": "rm -rf dist"
   },
   "keywords": [
