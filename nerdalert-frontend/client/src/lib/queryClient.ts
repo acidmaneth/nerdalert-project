@@ -1,17 +1,15 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 declare global {
-  interface ImportMeta {
-    env: {
-      VITE_NERDALERT_API_URL?: string;
-      [key: string]: any;
-    };
+  interface ImportMetaEnv {
+    VITE_NERDALERT_API_URL?: string;
+    [key: string]: any;
   }
 }
 
 const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_NERDALERT_API_URL)
   ? import.meta.env.VITE_NERDALERT_API_URL
-  : 'https://nerdalert-acidmaneth.replit.app';
+  : 'http://localhost:80';
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -42,7 +40,7 @@ export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }: { queryKey: readonly [string, ...unknown[]] }) => {
+  async ({ queryKey }) => {
     const res = await fetch(queryKey[0] as string, {
       credentials: "include",
     });

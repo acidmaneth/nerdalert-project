@@ -11,20 +11,36 @@ import type { Message } from "@shared/schema";
 export default function ChatContainer() {
   const [isTyping, setIsTyping] = useState(false);
   const [currentChatId, setCurrentChatId] = useState("1");
+  const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const queryClient = useQueryClient();
 
   const { data: messages = [], isLoading } = useQuery({
-    queryKey: ["/api/messages"],
+    queryKey: ["/memory"],
     refetchInterval: false,
   }) as { data: Message[]; isLoading: boolean };
 
   const sendMessageMutation = useMutation({
     mutationFn: sendMessage,
-    onMutate: () => {
+    onMutate: async (variables) => {
       setIsTyping(true);
+      // Add user message immediately
+      const userMessage: Message = {
+        id: Date.now(),
+        role: "user",
+        content: variables.messages[variables.messages.length - 1].content,
+        timestamp: new Date(),
+      };
+      setLocalMessages(prev => [...prev, userMessage]);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+    onSuccess: (data) => {
+      // Add assistant response
+      const assistantMessage: Message = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content: data.text,
+        timestamp: new Date(),
+      };
+      setLocalMessages(prev => [...prev, assistantMessage]);
       setIsTyping(false);
     },
     onError: () => {
@@ -34,7 +50,7 @@ export default function ChatContainer() {
 
   const handleSendMessage = async (content: string) => {
     const chatMessages = [
-      ...((messages as Message[]) ?? []).map((msg: Message) => ({
+      ...localMessages.map((msg: Message) => ({
         role: msg.role as 'user' | 'assistant' | 'system',
         content: msg.content,
       })),
@@ -47,7 +63,7 @@ export default function ChatContainer() {
   const handleNewChat = async () => {
     try {
       await clearMessages();
-      queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+      setLocalMessages([]);
       setCurrentChatId(Date.now().toString());
     } catch (error) {
       console.error("Failed to clear messages:", error);
@@ -61,8 +77,9 @@ export default function ChatContainer() {
 
   // On first load, call the agent's /start endpoint for a real intro
   useEffect(() => {
-    if ((messages as Message[]).length === 0 && !isLoading) {
-      fetch((import.meta.env.NERDALERT_API_URL || "/api") + "/start", {
+    if (localMessages.length === 0 && !isLoading) {
+      const apiBase = import.meta.env.VITE_NERDALERT_API_URL || "http://localhost:80";
+      fetch(`${apiBase}/start`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: [] }),
@@ -70,10 +87,30 @@ export default function ChatContainer() {
         .then(res => res.json())
         .then(data => {
           // Add the agent's real response to the chat
-          sendMessageMutation.mutate({ messages: [{ role: "assistant", content: data.text || data.response }] });
+          const assistantMessage: Message = {
+            id: Date.now(),
+            role: "assistant",
+            content: data.text || data.response || "Hello! I'm NerdAlert, your geek culture companion!",
+            timestamp: new Date(),
+          };
+          setLocalMessages([assistantMessage]);
+        })
+        .catch(error => {
+          console.error("Failed to get agent intro:", error);
+          // Fallback message
+          const assistantMessage: Message = {
+            id: Date.now(),
+            role: "assistant",
+            content: "Hello! I'm NerdAlert, your geek culture companion! What would you like to chat about?",
+            timestamp: new Date(),
+          };
+          setLocalMessages([assistantMessage]);
         });
     }
-  }, [(messages as Message[]).length, isLoading]);
+  }, [localMessages.length, isLoading]);
+
+  // Use local messages for display
+  const displayMessages = localMessages.length > 0 ? localMessages : messages;
 
   return (
     <div className="flex flex-col h-screen">
@@ -105,7 +142,7 @@ export default function ChatContainer() {
 
       {/* Chat Area */}
       <main className="flex-1 relative z-20 overflow-hidden">
-        <MessageList messages={messages} isTyping={isTyping} isLoading={isLoading} />
+        <MessageList messages={displayMessages} isTyping={isTyping} isLoading={isLoading} />
       </main>
 
       {/* Input Area */}
@@ -113,7 +150,7 @@ export default function ChatContainer() {
         <MessageInput 
           onSendMessage={handleSendMessage} 
           isLoading={sendMessageMutation.isPending}
-          messageCount={messages.length}
+          messageCount={displayMessages.length}
         />
       </footer>
     </div>

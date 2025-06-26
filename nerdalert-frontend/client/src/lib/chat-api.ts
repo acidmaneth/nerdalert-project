@@ -10,20 +10,20 @@ export interface SendMessageRequest {
 }
 
 export interface SendMessageResponse {
-  response: string;
+  text: string;
 }
 
 export async function sendMessage(request: SendMessageRequest): Promise<SendMessageResponse> {
-  const response = await apiRequest("POST", "/api/prompt-sync", request);
+  const response = await apiRequest("POST", "/prompt-sync", request);
   return response.json();
 }
 
 export async function getMessages() {
-  const response = await apiRequest("GET", "/api/messages");
+  const response = await apiRequest("GET", "/memory");
   return response.json();
 }
 
 export async function clearMessages() {
-  const response = await apiRequest("DELETE", "/api/messages");
+  const response = await apiRequest("DELETE", "/memory");
   return response.json();
 }
