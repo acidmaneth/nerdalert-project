@@ -10,6 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import type { Message } from "@shared/schema";
 
 export default function ChatContainer() {
+  console.log("VITE ENV:", import.meta.env); // Debug log for Vercel troubleshooting
   const [isTyping, setIsTyping] = useState(false);
   const [currentChatId, setCurrentChatId] = useState("1");
   const [localMessages, setLocalMessages] = useState<Message[]>([]);
