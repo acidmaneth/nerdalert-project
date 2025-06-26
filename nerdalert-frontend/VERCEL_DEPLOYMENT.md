@@ -185,7 +185,7 @@ Your `package.json` includes the necessary build scripts:
 ## 🌐 Domain Configuration
 
 ### Default Vercel Domain
-Your app will be available at: `https://your-project-name.vercel.app`
+Your app will be available at: `https://nerdalert-project-bv65gtuat-acidmans-projects.vercel.app/`
 
 ### Custom Domain Setup (Optional)
 
