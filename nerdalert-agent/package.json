@@ -1,6 +1,6 @@
 {
   "name": "nerdalert-agent",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "description": "A specialized AI agent for pop-culture enthusiasts with energy matching, conversation memory, enhanced date accuracy verification, and RAG (Retrieval-Augmented Generation) capabilities",
   "type": "module",
   "main": "dist/index.js",
