@@ -60,10 +60,10 @@ The LocalAI Chat UI is just for direct model testing and is optional.
 ### Current Agent Tunnel (Active)
 ```bash
 # Your current agent tunnel is running:
-https://183a-149-88-18-151.ngrok-free.app -> http://localhost:80
+https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app -> http://localhost:80
 
 # Use this URL for your NERDALERT_API_URL:
-NERDALERT_API_URL=https://183a-149-88-18-151.ngrok-free.app
+NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
 ```
 
 ### Install Ngrok (if not already installed)
@@ -95,7 +95,7 @@ ngrok http 5000
 ### Environment Variable Configuration
 ```bash
 # For your frontend, set this environment variable:
-NERDALERT_API_URL=https://183a-149-88-18-151.ngrok-free.app
+NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
 
 # For local development:
 NERDALERT_API_URL=http://localhost:80
@@ -190,7 +190,7 @@ npm run dev
 NERDALERT_API_URL=http://localhost:80
 
 # For external access (current tunnel):
-NERDALERT_API_URL=https://183a-149-88-18-151.ngrok-free.app
+NERDALERT_API_URL=https://b237-2600-6c50-5b3f-c6ea-a88d-ba2b-e9f8-60ed.ngrok-free.app
 ```
 
 ### Customize Frontend
