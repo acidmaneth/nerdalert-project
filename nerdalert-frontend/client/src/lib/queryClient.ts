@@ -9,7 +9,7 @@ declare global {
 
 const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_NERDALERT_API_URL)
   ? import.meta.env.VITE_NERDALERT_API_URL
-  : 'http://localhost:80';
+  : 'https://183a-149-88-18-151.ngrok-free.app';
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
