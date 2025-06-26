@@ -17,7 +17,7 @@ Before deploying to Vercel, ensure you have:
 ```bash
 # Ensure your code is pushed to GitHub
 git add .
-git commit -m "Prepare for Vercel deployment"
+git commit -m "Initial commit: NerdAlert AI Agent and Frontend"
 git push origin main
 ```
 
