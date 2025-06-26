@@ -2,26 +2,26 @@
   "version": 2,
   "builds": [
     {
-      "src": "package.json",
-      "use": "@vercel/node@latest",
+      "src": "client/index.html",
+      "use": "@vercel/static",
       "config": {
-        "installCommand": "npm install --legacy-peer-deps --force",
-        "buildCommand": "npm run build"
+        "distDir": "dist/public"
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/client/index.html"
     }
   ],
   "env": {
     "NODE_ENV": "production"
   },
-  "functions": {
-    "server/index.ts": {
-      "maxDuration": 30
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  }
+  ]
 } 
