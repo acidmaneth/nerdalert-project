@@ -13,19 +13,24 @@ const port = PORT;
 
 // Security middleware
 app.use(helmet());
+
+const allowedOrigins = [
+  'http://localhost:5050',
+  'http://127.0.0.1:5050',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+  'https://nerdalert.app',
+  'https://www.nerdalert.app',
+  // Regex to match Vercel deployment URLs
+  /https:\/\/nerdalert-project-.*-acidmans-projects\.vercel\.app$/,
+  // Regex to match ngrok free URLs
+  /https?:\/\/[a-zA-Z0-9-]+\.ngrok-free\.app$/,
+];
+
 app.use(cors({
-  origin: [
-    'http://localhost:5050',
-    'http://127.0.0.1:5050',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:5174',
-    'https://nerdalert.app',
-    'https://www.nerdalert.app',
-    'https://nerdalert-project-bv65gtuat-acidmans-projects.vercel.app',
-    'https://nerdalert-project-omvaz9rgu-acidmans-projects.vercel.app'
-  ],
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
