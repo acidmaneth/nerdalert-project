@@ -78,7 +78,7 @@ export default function ChatContainer() {
   // On first load, call the agent's /start endpoint for a real intro
   useEffect(() => {
     if (localMessages.length === 0 && !isLoading) {
-      const apiBase = import.meta.env.VITE_NERDALERT_API_URL || "https://183a-149-88-18-151.ngrok-free.app";
+      const apiBase = import.meta.env.VITE_NERDALERT_API_URL || "http://localhost:80";
       fetch(`${apiBase}/start`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
