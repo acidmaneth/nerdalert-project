@@ -1,14 +1,25 @@
 import { apiRequest } from "./queryClient";
 
 const getApiBase = () => {
+  // Check for environment variable first
   if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_NERDALERT_API_URL) {
     return import.meta.env.VITE_NERDALERT_API_URL;
   }
+  
+  // For local development
   if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
     return 'http://localhost:80';
   }
+  
+  // For production - use the same domain as the frontend (Vercel will proxy to Cloudflare)
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  
+  // Fallback
   return 'https://nerdalert.app';
 };
+
 const API_BASE = getApiBase();
 
 export interface ChatMessage {

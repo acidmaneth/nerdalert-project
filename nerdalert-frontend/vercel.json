@@ -2,5 +2,42 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
-  "framework": "vite"
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://nerdalert.app/api/$1"
+    },
+    {
+      "source": "/prompt",
+      "destination": "https://nerdalert.app/prompt"
+    },
+    {
+      "source": "/start",
+      "destination": "https://nerdalert.app/start"
+    },
+    {
+      "source": "/health",
+      "destination": "https://nerdalert.app/health"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ]
 } 

@@ -201,4 +201,47 @@ alias open-chat="open /Users/acidman/EAI/local-ai/chat_ui.html"
 alias ai-status="local-ai status"
 alias start-nerdalert="cd /Users/acidman/EAI/NerdAlert/nerdalert-agent && npm run dev"
 alias start-frontend="cd /Users/acidman/EAI/NerdAlert/nerdalert-frontend && npm run dev"
-alias cleanup-ai="cd /Users/acidman/EAI && ./cleanup-local-ai.sh" 
+alias cleanup-ai="cd /Users/acidman/EAI && ./cleanup-local-ai.sh"
+
+## **Next Steps: Use Your Existing Tunnel**
+
+### 1. **Find Your Credentials File**
+Run:
+```bash
+ls ~/.cloudflared/
+```
+Look for a file named `5336075a-f3bd-4f0d-808e-f650b6629b27.json`
+
+### 2. **Edit/Create Your Config File**
+Edit `~/.cloudflared/config.yml` to:
+```yaml
+tunnel: nerdalert-tunnel
+credentials-file: /Users/acidman/.cloudflared/5336075a-f3bd-4f0d-808e-f650b6629b27.json
+
+ingress:
+  - hostname: nerdalert.app
+    service: http://localhost:80
+  - service: http_status:404
+```
+
+### 3. **Route DNS (if not already done)**
+```bash
+cloudflared tunnel route dns nerdalert-tunnel nerdalert.app
+```
+This will ensure your DNS is set up correctly.
+
+### 4. **Run the Tunnel**
+```bash
+cloudflared tunnel run nerdalert-tunnel
+```
+
+---
+
+## **If You Want to Use the Other Tunnel**
+Just change the `tunnel:` and `credentials-file:` in your config to match the other tunnel's ID and name.
+
+---
+
+**Once you do this, your tunnel will be live and your domain will point to your local port 80!**
+
+Let me know if you want to use a different tunnel, or if you need help with any of these steps. 
