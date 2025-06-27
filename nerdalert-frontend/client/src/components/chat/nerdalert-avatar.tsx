@@ -1,4 +1,5 @@
-import NerdAlertImage from "@assets/NerdAlert3800_1750831460413.png";
+// Use a public URL that works in both dev and production
+const NerdAlertImage = "/NerdAlert3800_1750831460413.png";
 
 interface NerdAlertAvatarProps {
   size?: "sm" | "md" | "lg";
