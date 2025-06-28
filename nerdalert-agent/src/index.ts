@@ -201,9 +201,7 @@ app.get("/memory/:sessionId", (req: Request, res: Response) => {
     res.json({
       sessionId,
       discussedTopics: Array.from(memory.discussedTopics),
-      mentionedCharacters: Array.from(memory.mentionedCharacters),
-      explainedConcepts: Array.from(memory.explainedConcepts),
-      sharedTrivia: Array.from(memory.sharedTrivia),
+      recentMessages: memory.recentMessages,
       lastUpdate: memory.lastUpdate
     });
   } else {

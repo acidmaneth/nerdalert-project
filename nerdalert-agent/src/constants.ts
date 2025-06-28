@@ -6,4 +6,7 @@ export const LLM_BASE_URL =
   process.env.LLM_BASE_URL || "http://localhost:8080";
 export const MODEL = process.env.MODEL || "local-model";
 export const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT || "";
-export const SERPER_API_KEY = process.env.SERPER_API_KEY;
+
+// Brave Search Configuration
+export const SEARCH_PROVIDER = process.env.SEARCH_PROVIDER || "brave";
+export const BRAVE_API_KEY = process.env.BRAVE_API_KEY;
