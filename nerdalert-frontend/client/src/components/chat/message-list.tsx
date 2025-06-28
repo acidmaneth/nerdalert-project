@@ -8,6 +8,7 @@ interface MessageListProps {
   messages: Message[];
   isTyping: boolean;
   isLoading: boolean;
+  isThinking: boolean;
 }
 
 interface ProcessedMessage {
@@ -18,7 +19,7 @@ interface ProcessedMessage {
   thinkingContent?: string;
 }
 
-export default function MessageList({ messages, isTyping, isLoading }: MessageListProps) {
+export default function MessageList({ messages, isTyping, isLoading, isThinking }: MessageListProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [dotCount, setDotCount] = useState(1);
   const [expandedThinking, setExpandedThinking] = useState<Set<number>>(new Set());
@@ -49,7 +50,7 @@ export default function MessageList({ messages, isTyping, isLoading }: MessageLi
         return {
           ...message,
           id: idx,
-          timestamp: new Date(),
+          timestamp: message.timestamp || new Date(),
         };
       }
 
@@ -77,7 +78,7 @@ export default function MessageList({ messages, isTyping, isLoading }: MessageLi
       return {
         ...message,
         id: idx,
-        timestamp: new Date(),
+        timestamp: message.timestamp || new Date(),
         content: cleanContent,
         thinkingContent: thinkingContent || undefined,
       };
@@ -215,14 +216,14 @@ export default function MessageList({ messages, isTyping, isLoading }: MessageLi
           </div>
         );
       })}
-      {/* Agent thinking animation - show when typing and last message is from user */}
-      {isTyping && messages.length > 0 && messages[messages.length - 1].role === "user" && (
+      {/* Agent thinking animation - show when thinking or when typing and last message is from user */}
+      {(isThinking || (isTyping && messages.length > 0 && messages[messages.length - 1].role === "user")) && (
         <div className="flex items-start space-x-3 message-enter">
           <NerdAlertAvatar size="sm" />
           <div className="max-w-2xl bg-cyber-gray border-l-4 border-neon-green rounded-r-lg p-4">
             <div className="leading-relaxed terminal-font text-terminal-green">
               <div className="flex items-center space-x-2">
-                <span>PROCESSING</span>
+                <span>{isThinking ? "THINKING" : "PROCESSING"}</span>
                 <span className="animate-pulse">{".".repeat(dotCount)}</span>
               </div>
             </div>

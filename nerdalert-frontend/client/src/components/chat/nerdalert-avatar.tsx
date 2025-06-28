@@ -1,6 +1,3 @@
-// Use a public URL that works in both dev and production
-const NerdAlertImage = "/NerdAlert3800_1750831460413.png";
-
 interface NerdAlertAvatarProps {
   size?: "sm" | "md" | "lg";
 }
@@ -15,9 +12,21 @@ export default function NerdAlertAvatar({ size = "md" }: NerdAlertAvatarProps) {
   return (
     <div className={`${sizeClasses[size]} relative flex-shrink-0`}>
       <img 
-        src={NerdAlertImage} 
-        alt="NerdAlert AI" 
-        className="w-full h-full object-contain pixelated border-2 border-neon-cyan animate-glow rounded"
+        src="/3800.png" 
+        alt="NerdAlert AI Avatar" 
+        className="w-full h-full object-cover rounded border-2 border-cyan-400 animate-glow pixelated"
+        style={{ 
+          imageRendering: 'pixelated',
+          boxShadow: '0 0 10px rgba(0, 255, 255, 0.5)'
+        }}
+        onError={(e) => {
+          console.error('Avatar image failed to load');
+          // Show a fallback
+          e.currentTarget.style.display = 'none';
+        }}
+        onLoad={() => {
+          console.log('Avatar image loaded successfully');
+        }}
       />
     </div>
   );

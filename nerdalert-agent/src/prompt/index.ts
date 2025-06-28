@@ -403,6 +403,94 @@ const tools = [
   canonCheckTool,
   ragEnhancedSearchTool,
   ragValidationTool,
+  {
+    type: "function" as const,
+    function: {
+      name: "enhanced_canon_verification",
+      description: "Perform franchise-specific canon verification to determine if information is official canon, non-canon, speculation, or rumor. Critical for maintaining accuracy in pop-culture discussions.",
+      parameters: {
+        type: "object" as const,
+        properties: {
+          query: {
+            type: "string",
+            description: "The information or claim to check for canon status.",
+          },
+          franchise: {
+            type: "string",
+            description: "The franchise to check canon status in (Marvel, DC, Star Wars, Star Trek, etc.).",
+          },
+          content_type: {
+            type: "string",
+            description: "The type of content being verified (character, plot, event, etc.).",
+          },
+        },
+        required: ["query", "franchise", "content_type"],
+      },
+    },
+  },
+  {
+    type: "function" as const,
+    function: {
+      name: "advanced_trivia_verification",
+      description: "Cross-reference trivia facts across multiple sources to verify accuracy and provide confidence levels. Use this for behind-the-scenes facts, easter eggs, and production details.",
+      parameters: {
+        type: "object" as const,
+        properties: {
+          query: {
+            type: "string",
+            description: "The general topic or subject of the trivia fact.",
+          },
+          trivia_fact: {
+            type: "string",
+            description: "The specific trivia fact to verify across multiple sources.",
+          },
+        },
+        required: ["query", "trivia_fact"],
+      },
+    },
+  },
+  {
+    type: "function" as const,
+    function: {
+      name: "detect_fake_information",
+      description: "Detect fake information, hoaxes, and debunked claims by searching across fact-checking sites and official sources. Critical for preventing the spread of misinformation.",
+      parameters: {
+        type: "object" as const,
+        properties: {
+          query: {
+            type: "string",
+            description: "The general topic or subject being discussed.",
+          },
+          content: {
+            type: "string",
+            description: "The specific information or claim to check for fake/debunked status.",
+          },
+        },
+        required: ["query", "content"],
+      },
+    },
+  },
+  {
+    type: "function" as const,
+    function: {
+      name: "verify_official_vs_fan_content",
+      description: "Distinguish between official, canon information and fan-made content, speculation, or theories. Essential for maintaining accuracy in pop-culture discussions.",
+      parameters: {
+        type: "object" as const,
+        properties: {
+          query: {
+            type: "string",
+            description: "The general topic or subject being discussed.",
+          },
+          content: {
+            type: "string",
+            description: "The specific information to verify as official vs fan-made content.",
+          },
+        },
+        required: ["query", "content"],
+      },
+    },
+  },
 ];
 
 // Implement the web search function with enhanced research capabilities
@@ -416,16 +504,18 @@ async function web_search(query: string): Promise<string> {
   
   // Create multiple search strategies for comprehensive research
   const searchStrategies = [
+    // Cast and character information (highest priority)
+    { q: `${query} cast actor who plays site:imdb.com OR site:rottentomatoes.com`, description: "Cast databases" },
     // Primary search with accuracy focus
-    { q: `${query} site:fandom.com OR site:marvel.com OR site:dc.com OR site:starwars.com OR site:memory-alpha.org OR site:wookieepedia.org` },
+    { q: `${query} site:fandom.com OR site:marvel.com OR site:dc.com OR site:starwars.com OR site:memory-alpha.org OR site:wookieepedia.org`, description: "Fandom wikis" },
     // Fan wiki search
-    { q: `${query} site:*.fandom.com OR site:*.wikia.com` },
+    { q: `${query} site:*.fandom.com OR site:*.wikia.com`, description: "Fan wikis" },
     // News and official sources
-    { q: `${query} site:variety.com OR site:hollywoodreporter.com OR site:deadline.com OR site:thewrap.com` },
+    { q: `${query} site:variety.com OR site:hollywoodreporter.com OR site:deadline.com OR site:thewrap.com`, description: "Entertainment news" },
     // Reddit fan communities
-    { q: `${query} site:reddit.com/r/marvel OR site:reddit.com/r/DCcomics OR site:reddit.com/r/StarWars OR site:reddit.com/r/startrek` },
+    { q: `${query} site:reddit.com/r/marvel OR site:reddit.com/r/DCcomics OR site:reddit.com/r/StarWars OR site:reddit.com/r/startrek`, description: "Fan communities" },
     // IMDB and entertainment databases
-    { q: `${query} site:imdb.com OR site:rottentomatoes.com OR site:metacritic.com` }
+    { q: `${query} site:imdb.com OR site:rottentomatoes.com OR site:metacritic.com`, description: "Entertainment databases" }
   ];
 
   let allResults: any[] = [];
@@ -513,6 +603,9 @@ function prioritizeResults(results: any[]): any[] {
   
   // Define priority scores for different source types
   const sourcePriorities = {
+    // Cast and actor databases (highest priority for character info)
+    'imdb.com': 11, 'rottentomatoes.com': 10, 'metacritic.com': 10,
+    
     // Official sources (highest priority)
     'marvel.com': 10, 'dc.com': 10, 'starwars.com': 10, 'startrek.com': 10,
     'disney.com': 10, 'warnerbros.com': 10, 'paramount.com': 10,
@@ -526,7 +619,7 @@ function prioritizeResults(results: any[]): any[] {
     'thewrap.com': 8, 'collider.com': 8, 'screenrant.com': 8,
     
     // Review and database sites
-    'imdb.com': 7, 'rottentomatoes.com': 7, 'metacritic.com': 7,
+    'boxofficemojo.com': 7, 'comicbook.com': 7,
     
     // Reddit fan communities
     'reddit.com': 6,
@@ -574,10 +667,19 @@ async function deep_trivia_search(query: string, search_type: string): Promise<s
   switch (search_type) {
     case "character":
       searchStrategies = [
+        // Cast and actor information (highest priority)
+        { q: `${query} cast actor who plays site:imdb.com`, description: "IMDB cast information" },
+        { q: `${query} cast list actors site:imdb.com OR site:rottentomatoes.com`, description: "Cast lists" },
+        { q: `${query} actor character site:marvel.com OR site:dc.com OR site:starwars.com`, description: "Official character casting" },
+        { q: `${query} who plays character site:variety.com OR site:hollywoodreporter.com`, description: "Casting news" },
+        // Character details and background
         { q: `${query} character site:marvel.fandom.com OR site:dc.fandom.com OR site:starwars.fandom.com OR site:memory-alpha.org`, description: "Character wikis" },
         { q: `${query} character biography site:marvel.com OR site:dc.com OR site:starwars.com`, description: "Official character pages" },
         { q: `${query} character analysis site:screenrant.com OR site:collider.com OR site:comicbook.com`, description: "Character analysis" },
-        { q: `${query} character origin story site:*.fandom.com`, description: "Origin stories" }
+        { q: `${query} character origin story site:*.fandom.com`, description: "Origin stories" },
+        // Actor information
+        { q: `${query} actor biography filmography site:imdb.com`, description: "Actor filmography" },
+        { q: `${query} actor career roles site:variety.com OR site:hollywoodreporter.com`, description: "Actor career info" }
       ];
       break;
       
@@ -975,6 +1077,50 @@ export const prompt = async (
           name: functionName,
           content: functionResponse,
         } as any);
+      } else if (functionName === "enhanced_canon_verification") {
+        const functionArgs = JSON.parse(toolCall.function.arguments);
+        const functionResponse = await enhanced_canon_verification(functionArgs.query, functionArgs.franchise, functionArgs.content_type);
+        
+        // Add tool results to the conversation history
+        initialMessages.push({
+          tool_call_id: toolCall.id,
+          role: "tool",
+          name: functionName,
+          content: functionResponse,
+        } as any);
+      } else if (functionName === "advanced_trivia_verification") {
+        const functionArgs = JSON.parse(toolCall.function.arguments);
+        const functionResponse = await advanced_trivia_verification(functionArgs.query, functionArgs.trivia_fact);
+        
+        // Add tool results to the conversation history
+        initialMessages.push({
+          tool_call_id: toolCall.id,
+          role: "tool",
+          name: functionName,
+          content: functionResponse,
+        } as any);
+      } else if (functionName === "detect_fake_information") {
+        const functionArgs = JSON.parse(toolCall.function.arguments);
+        const functionResponse = await detect_fake_information(functionArgs.query, functionArgs.content);
+        
+        // Add tool results to the conversation history
+        initialMessages.push({
+          tool_call_id: toolCall.id,
+          role: "tool",
+          name: functionName,
+          content: functionResponse,
+        } as any);
+      } else if (functionName === "verify_official_vs_fan_content") {
+        const functionArgs = JSON.parse(toolCall.function.arguments);
+        const functionResponse = await verify_official_vs_fan_content(functionArgs.query, functionArgs.content);
+        
+        // Add tool results to the conversation history
+        initialMessages.push({
+          tool_call_id: toolCall.id,
+          role: "tool",
+          name: functionName,
+          content: functionResponse,
+        } as any);
       }
     }
 
@@ -1208,4 +1354,575 @@ async function rag_validate_information(topic: string, category?: string): Promi
     console.error(`RAG validation failed: ${(error as Error).message}`);
     return `Validation failed: ${(error as Error).message}`;
   }
+}
+
+async function enhanced_canon_verification(query: string, franchise: string, content_type: string): Promise<string> {
+  console.log(`Performing enhanced canon verification for: ${query} (${franchise}, ${content_type})`);
+  if (!SERPER_API_KEY) {
+    throw new Error("SERPER_API_KEY is not set.");
+  }
+
+  const searchUrl = "https://google.serper.dev/search";
+  
+  // Franchise-specific canon verification strategies
+  const franchiseStrategies = {
+    "Marvel": [
+      { q: `${query} MCU canon site:marvel.com`, description: "Official MCU canon" },
+      { q: `${query} Marvel Comics canon site:marvel.fandom.com`, description: "Comics canon" },
+      { q: `${query} continuity site:marvel.fandom.com`, description: "Continuity check" },
+      { q: `${query} retcon site:marvel.fandom.com`, description: "Retcon history" },
+      { q: `${query} multiverse site:marvel.fandom.com`, description: "Multiverse status" }
+    ],
+    "DC": [
+      { q: `${query} DCU canon site:dc.com`, description: "Official DCU canon" },
+      { q: `${query} DC Comics canon site:dc.fandom.com`, description: "Comics canon" },
+      { q: `${query} continuity site:dc.fandom.com`, description: "Continuity check" },
+      { q: `${query} Crisis site:dc.fandom.com`, description: "Crisis events" },
+      { q: `${query} multiverse site:dc.fandom.com`, description: "Multiverse status" }
+    ],
+    "Star Wars": [
+      { q: `${query} Star Wars canon site:starwars.com`, description: "Official canon" },
+      { q: `${query} Legends site:wookieepedia.org`, description: "Legends status" },
+      { q: `${query} continuity site:wookieepedia.org`, description: "Continuity check" },
+      { q: `${query} Disney canon site:wookieepedia.org`, description: "Disney era" },
+      { q: `${query} timeline site:starwars.com`, description: "Timeline placement" }
+    ],
+    "Star Trek": [
+      { q: `${query} Star Trek canon site:startrek.com`, description: "Official canon" },
+      { q: `${query} continuity site:memory-alpha.org`, description: "Continuity check" },
+      { q: `${query} timeline site:memory-alpha.org`, description: "Timeline placement" },
+      { q: `${query} prime universe site:memory-alpha.org`, description: "Prime universe" },
+      { q: `${query} Kelvin timeline site:memory-alpha.org`, description: "Kelvin timeline" }
+    ]
+  };
+
+  const strategies = franchiseStrategies[franchise as keyof typeof franchiseStrategies] || franchiseStrategies["Marvel"];
+  
+  let allResults: any[] = [];
+  let searchErrors: string[] = [];
+
+  // Perform franchise-specific canon searches
+  for (const strategy of strategies) {
+    try {
+      const searchPayload = JSON.stringify({ q: strategy.q });
+      const response = await axios.post(searchUrl, searchPayload, {
+        headers: {
+          "X-API-KEY": SERPER_API_KEY,
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      });
+
+      const results = response.data.organic || [];
+      allResults = allResults.concat(results);
+      
+      console.log(`Canon verification strategy "${strategy.description}" returned ${results.length} results`);
+    } catch (error) {
+      const errorMsg = `Canon verification strategy failed: ${(error as Error).message}`;
+      searchErrors.push(errorMsg);
+      console.error(errorMsg);
+    }
+  }
+
+  // Analyze canon status based on results
+  const canonAnalysis = analyzeEnhancedCanonStatus(allResults, query, franchise, content_type);
+  
+  const resultSummary = `Enhanced canon verification for ${franchise} found ${allResults.length} relevant results.`;
+  const errorSummary = searchErrors.length > 0 ? `\nSearch errors: ${searchErrors.join(", ")}` : "";
+  
+  return `${resultSummary}${errorSummary}\n\n${canonAnalysis}`;
+}
+
+function analyzeEnhancedCanonStatus(results: any[], query: string, franchise: string, content_type: string): string {
+  let officialCanon = 0;
+  let nonCanon = 0;
+  let speculation = 0;
+  let conflicting = 0;
+  let sources: string[] = [];
+  let timelineInfo = "";
+  let continuityNotes = "";
+
+  for (const result of results) {
+    const source = result.link || "";
+    const content = (result.snippet || "").toLowerCase();
+    sources.push(source);
+
+    // Analyze content for canon indicators
+    if (content.includes("official canon") || content.includes("confirmed") || content.includes("canonical")) {
+      officialCanon++;
+    } else if (content.includes("non-canon") || content.includes("legends") || content.includes("alternate")) {
+      nonCanon++;
+    } else if (content.includes("speculation") || content.includes("theory") || content.includes("rumor")) {
+      speculation++;
+    } else if (content.includes("conflicting") || content.includes("contradicts") || content.includes("dispute")) {
+      conflicting++;
+    }
+
+    // Extract timeline information
+    if (content.includes("timeline") || content.includes("era") || content.includes("period")) {
+      timelineInfo += `\nTimeline info: ${result.snippet}`;
+    }
+
+    // Extract continuity notes
+    if (content.includes("continuity") || content.includes("retcon") || content.includes("crisis")) {
+      continuityNotes += `\nContinuity note: ${result.snippet}`;
+    }
+  }
+
+  // Determine overall canon status
+  let canonStatus = "UNVERIFIED";
+  let confidence = "LOW";
+  
+  if (officialCanon > nonCanon && officialCanon > speculation) {
+    canonStatus = "CANON";
+    confidence = officialCanon > 2 ? "HIGH" : "MEDIUM";
+  } else if (nonCanon > officialCanon) {
+    canonStatus = "NON-CANON";
+    confidence = nonCanon > 2 ? "HIGH" : "MEDIUM";
+  } else if (speculation > 0) {
+    canonStatus = "SPECULATION";
+    confidence = "MEDIUM";
+  }
+
+  if (conflicting > 0) {
+    canonStatus += " (CONFLICTING SOURCES)";
+  }
+
+  return `ENHANCED CANON ANALYSIS:
+Query: ${query}
+Franchise: ${franchise}
+Content Type: ${content_type}
+
+CANON STATUS: ${canonStatus}
+CONFIDENCE: ${confidence}
+
+ANALYSIS BREAKDOWN:
+- Official Canon Sources: ${officialCanon}
+- Non-Canon Sources: ${nonCanon}
+- Speculation Sources: ${speculation}
+- Conflicting Sources: ${conflicting}
+
+SOURCES CHECKED: ${sources.length}
+${timelineInfo}
+${continuityNotes}
+
+RECOMMENDATION: ${getCanonRecommendation(canonStatus, confidence, franchise)}`;
+}
+
+function getCanonRecommendation(canonStatus: string, confidence: string, franchise: string): string {
+  if (canonStatus.includes("CANON") && confidence === "HIGH") {
+    return `This information is confirmed ${franchise} canon and can be shared with high confidence.`;
+  } else if (canonStatus.includes("NON-CANON") && confidence === "HIGH") {
+    return `This information is confirmed non-canon and should be clearly labeled as such.`;
+  } else if (canonStatus.includes("SPECULATION")) {
+    return `This information appears to be speculation and should be labeled as such when shared.`;
+  } else if (canonStatus.includes("CONFLICTING")) {
+    return `Conflicting sources found. Recommend additional verification before sharing.`;
+  } else {
+    return `Canon status unclear. Recommend additional research or label as unverified.`;
+  }
+}
+
+async function advanced_trivia_verification(query: string, trivia_fact: string): Promise<string> {
+  console.log(`Performing advanced trivia verification for: ${query}`);
+  if (!SERPER_API_KEY) {
+    throw new Error("SERPER_API_KEY is not set.");
+  }
+
+  const searchUrl = "https://google.serper.dev/search";
+  
+  // Multi-source trivia verification strategies
+  const verificationStrategies = [
+    { q: `"${trivia_fact}" site:imdb.com`, description: "IMDB verification" },
+    { q: `"${trivia_fact}" site:*.fandom.com`, description: "Fandom wiki verification" },
+    { q: `"${trivia_fact}" site:variety.com OR site:hollywoodreporter.com`, description: "Industry news verification" },
+    { q: `"${trivia_fact}" site:screenrant.com OR site:collider.com`, description: "Entertainment site verification" },
+    { q: `"${trivia_fact}" site:reddit.com`, description: "Fan community verification" },
+    { q: `${query} trivia fact check`, description: "General fact checking" },
+    { q: `${query} behind the scenes fact`, description: "Behind the scenes verification" }
+  ];
+
+  let allResults: any[] = [];
+  let searchErrors: string[] = [];
+  let sourceAgreement = 0;
+  let sourceDisagreement = 0;
+  let authoritativeSources = 0;
+
+  // Perform multi-source verification
+  for (const strategy of verificationStrategies) {
+    try {
+      const searchPayload = JSON.stringify({ q: strategy.q });
+      const response = await axios.post(searchUrl, searchPayload, {
+        headers: {
+          "X-API-KEY": SERPER_API_KEY,
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      });
+
+      const results = response.data.organic || [];
+      allResults = allResults.concat(results);
+      
+      // Analyze source agreement
+      for (const result of results) {
+        const content = (result.snippet || "").toLowerCase();
+        const source = result.link || "";
+        
+        // Check if this source confirms the trivia fact
+        if (content.includes(trivia_fact.toLowerCase()) || content.includes(query.toLowerCase())) {
+          sourceAgreement++;
+          
+          // Check if it's an authoritative source
+          if (source.includes("imdb.com") || source.includes("marvel.com") || 
+              source.includes("dc.com") || source.includes("starwars.com") ||
+              source.includes("variety.com") || source.includes("hollywoodreporter.com")) {
+            authoritativeSources++;
+          }
+        } else {
+          sourceDisagreement++;
+        }
+      }
+      
+      console.log(`Trivia verification strategy "${strategy.description}" returned ${results.length} results`);
+    } catch (error) {
+      const errorMsg = `Trivia verification strategy failed: ${(error as Error).message}`;
+      searchErrors.push(errorMsg);
+      console.error(errorMsg);
+    }
+  }
+
+  // Calculate confidence score
+  const totalSources = sourceAgreement + sourceDisagreement;
+  const agreementRate = totalSources > 0 ? sourceAgreement / totalSources : 0;
+  const authorityRate = sourceAgreement > 0 ? authoritativeSources / sourceAgreement : 0;
+  
+  let confidence = "LOW";
+  if (agreementRate > 0.8 && authorityRate > 0.5) {
+    confidence = "HIGH";
+  } else if (agreementRate > 0.6 && authorityRate > 0.3) {
+    confidence = "MEDIUM";
+  }
+
+  // Generate verification report
+  const verificationReport = generateTriviaVerificationReport(
+    query, trivia_fact, sourceAgreement, sourceDisagreement, 
+    authoritativeSources, agreementRate, authorityRate, confidence, allResults
+  );
+
+  const resultSummary = `Advanced trivia verification found ${allResults.length} relevant results from ${verificationStrategies.length} verification strategies.`;
+  const errorSummary = searchErrors.length > 0 ? `\nSearch errors: ${searchErrors.join(", ")}` : "";
+  
+  return `${resultSummary}${errorSummary}\n\n${verificationReport}`;
+}
+
+function generateTriviaVerificationReport(
+  query: string, trivia_fact: string, agreement: number, disagreement: number,
+  authoritative: number, agreementRate: number, authorityRate: number, 
+  confidence: string, results: any[]
+): string {
+  const uniqueSources = [...new Set(results.map(r => new URL(r.link || "").hostname))];
+  
+  return `ADVANCED TRIVIA VERIFICATION REPORT:
+Query: ${query}
+Trivia Fact: ${trivia_fact}
+
+VERIFICATION METRICS:
+- Sources Confirming: ${agreement}
+- Sources Disagreeing: ${disagreement}
+- Authoritative Sources: ${authoritative}
+- Agreement Rate: ${(agreementRate * 100).toFixed(1)}%
+- Authority Rate: ${(authorityRate * 100).toFixed(1)}%
+- Total Sources Checked: ${uniqueSources.length}
+
+CONFIDENCE LEVEL: ${confidence}
+
+SOURCE BREAKDOWN:
+${uniqueSources.slice(0, 10).map(source => `- ${source}`).join('\n')}
+
+RECOMMENDATION: ${getTriviaRecommendation(confidence, agreementRate, authorityRate)}`;
+}
+
+function getTriviaRecommendation(confidence: string, agreementRate: number, authorityRate: number): string {
+  if (confidence === "HIGH") {
+    return "This trivia fact is well-verified and can be shared with high confidence.";
+  } else if (confidence === "MEDIUM") {
+    return "This trivia fact has moderate verification. Consider adding 'reportedly' or 'according to sources' when sharing.";
+  } else {
+    return "This trivia fact has limited verification. Recommend additional research or label as unverified.";
+  }
+}
+
+async function detect_fake_information(query: string, content: string): Promise<string> {
+  console.log(`Detecting fake information for: ${query}`);
+  if (!SERPER_API_KEY) {
+    throw new Error("SERPER_API_KEY is not set.");
+  }
+
+  const searchUrl = "https://google.serper.dev/search";
+  
+  // Fake information detection strategies
+  const detectionStrategies = [
+    { q: `"${content}" debunked fake hoax`, description: "Debunking search" },
+    { q: `"${content}" false rumor myth`, description: "Rumor verification" },
+    { q: `"${content}" official confirmation site:marvel.com OR site:dc.com OR site:starwars.com`, description: "Official confirmation" },
+    { q: `"${content}" fan theory speculation`, description: "Fan theory check" },
+    { q: `"${content}" confirmed false site:snopes.com OR site:factcheck.org`, description: "Fact checking sites" },
+    { q: `${query} fake news hoax debunked`, description: "General debunking" }
+  ];
+
+  let allResults: any[] = [];
+  let searchErrors: string[] = [];
+  let fakeIndicators = 0;
+  let officialConfirmations = 0;
+  let fanTheoryIndicators = 0;
+  let debunkingSources = 0;
+
+  // Perform fake information detection searches
+  for (const strategy of detectionStrategies) {
+    try {
+      const searchPayload = JSON.stringify({ q: strategy.q });
+      const response = await axios.post(searchUrl, searchPayload, {
+        headers: {
+          "X-API-KEY": SERPER_API_KEY,
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      });
+
+      const results = response.data.organic || [];
+      allResults = allResults.concat(results);
+      
+      // Analyze results for fake information indicators
+      for (const result of results) {
+        const content = (result.snippet || "").toLowerCase();
+        const source = result.link || "";
+        
+        // Check for fake information indicators
+        if (content.includes("fake") || content.includes("hoax") || content.includes("debunked") || 
+            content.includes("false") || content.includes("myth") || content.includes("rumor")) {
+          fakeIndicators++;
+        }
+        
+        // Check for official confirmations
+        if (source.includes("marvel.com") || source.includes("dc.com") || 
+            source.includes("starwars.com") || source.includes("disney.com")) {
+          officialConfirmations++;
+        }
+        
+        // Check for fan theory indicators
+        if (content.includes("fan theory") || content.includes("speculation") || 
+            content.includes("theory") || content.includes("rumor")) {
+          fanTheoryIndicators++;
+        }
+        
+        // Check for debunking sources
+        if (source.includes("snopes.com") || source.includes("factcheck.org") || 
+            source.includes("reuters.com") || source.includes("ap.org")) {
+          debunkingSources++;
+        }
+      }
+      
+      console.log(`Fake detection strategy "${strategy.description}" returned ${results.length} results`);
+    } catch (error) {
+      const errorMsg = `Fake detection strategy failed: ${(error as Error).message}`;
+      searchErrors.push(errorMsg);
+      console.error(errorMsg);
+    }
+  }
+
+  // Generate fake information analysis
+  const fakeAnalysis = generateFakeInformationReport(
+    query, content, fakeIndicators, officialConfirmations, 
+    fanTheoryIndicators, debunkingSources, allResults
+  );
+
+  const resultSummary = `Fake information detection found ${allResults.length} relevant results from ${detectionStrategies.length} detection strategies.`;
+  const errorSummary = searchErrors.length > 0 ? `\nSearch errors: ${searchErrors.join(", ")}` : "";
+  
+  return `${resultSummary}${errorSummary}\n\n${fakeAnalysis}`;
+}
+
+function generateFakeInformationReport(
+  query: string, content: string, fakeIndicators: number, officialConfirmations: number,
+  fanTheoryIndicators: number, debunkingSources: number, results: any[]
+): string {
+  const uniqueSources = [...new Set(results.map(r => new URL(r.link || "").hostname))];
+  
+  // Determine fake information risk level
+  let riskLevel = "LOW";
+  let recommendation = "";
+  
+  if (fakeIndicators > 3 || debunkingSources > 1) {
+    riskLevel = "HIGH";
+    recommendation = "This information appears to be fake or debunked. Do not share without strong verification.";
+  } else if (fakeIndicators > 1 || fanTheoryIndicators > 2) {
+    riskLevel = "MEDIUM";
+    recommendation = "This information may be unverified or fan speculation. Verify before sharing.";
+  } else if (officialConfirmations > 0) {
+    riskLevel = "LOW";
+    recommendation = "This information appears to be officially confirmed.";
+  } else {
+    riskLevel = "UNKNOWN";
+    recommendation = "Unable to determine authenticity. Recommend additional verification.";
+  }
+
+  return `FAKE INFORMATION DETECTION REPORT:
+Query: ${query}
+Content: ${content}
+
+RISK ASSESSMENT:
+Risk Level: ${riskLevel}
+Fake Indicators: ${fakeIndicators}
+Official Confirmations: ${officialConfirmations}
+Fan Theory Indicators: ${fanTheoryIndicators}
+Debunking Sources: ${debunkingSources}
+
+SOURCES CHECKED: ${uniqueSources.length}
+${uniqueSources.slice(0, 10).map(source => `- ${source}`).join('\n')}
+
+RECOMMENDATION: ${recommendation}`;
+}
+
+async function verify_official_vs_fan_content(query: string, content: string): Promise<string> {
+  console.log(`Verifying official vs fan content for: ${query}`);
+  if (!SERPER_API_KEY) {
+    throw new Error("SERPER_API_KEY is not set.");
+  }
+
+  const searchUrl = "https://google.serper.dev/search";
+  
+  // Official vs fan content verification strategies
+  const verificationStrategies = [
+    { q: `"${content}" official announcement site:marvel.com OR site:dc.com OR site:starwars.com`, description: "Official announcements" },
+    { q: `"${content}" press release site:variety.com OR site:hollywoodreporter.com`, description: "Press releases" },
+    { q: `"${content}" fan theory speculation site:reddit.com`, description: "Fan theories" },
+    { q: `"${content}" fan fiction site:fanfiction.net OR site:archiveofourown.org`, description: "Fan fiction" },
+    { q: `"${content}" confirmed canon site:*.fandom.com`, description: "Canon confirmation" },
+    { q: `"${content}" official source site:imdb.com OR site:boxofficemojo.com`, description: "Official databases" }
+  ];
+
+  let allResults: any[] = [];
+  let searchErrors: string[] = [];
+  let officialSources = 0;
+  let fanSources = 0;
+  let canonConfirmations = 0;
+  let speculationIndicators = 0;
+
+  // Perform official vs fan content verification
+  for (const strategy of verificationStrategies) {
+    try {
+      const searchPayload = JSON.stringify({ q: strategy.q });
+      const response = await axios.post(searchUrl, searchPayload, {
+        headers: {
+          "X-API-KEY": SERPER_API_KEY,
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      });
+
+      const results = response.data.organic || [];
+      allResults = allResults.concat(results);
+      
+      // Analyze results for official vs fan content
+      for (const result of results) {
+        const content = (result.snippet || "").toLowerCase();
+        const source = result.link || "";
+        
+        // Check for official sources
+        if (source.includes("marvel.com") || source.includes("dc.com") || 
+            source.includes("starwars.com") || source.includes("disney.com") ||
+            source.includes("variety.com") || source.includes("hollywoodreporter.com") ||
+            source.includes("imdb.com")) {
+          officialSources++;
+        }
+        
+        // Check for fan sources
+        if (source.includes("reddit.com") || source.includes("fanfiction.net") ||
+            source.includes("archiveofourown.org") || content.includes("fan theory") ||
+            content.includes("speculation")) {
+          fanSources++;
+        }
+        
+        // Check for canon confirmations
+        if (content.includes("canon") || content.includes("official") || 
+            content.includes("confirmed")) {
+          canonConfirmations++;
+        }
+        
+        // Check for speculation indicators
+        if (content.includes("speculation") || content.includes("theory") || 
+            content.includes("rumor") || content.includes("might")) {
+          speculationIndicators++;
+        }
+      }
+      
+      console.log(`Official vs fan verification strategy "${strategy.description}" returned ${results.length} results`);
+    } catch (error) {
+      const errorMsg = `Official vs fan verification strategy failed: ${(error as Error).message}`;
+      searchErrors.push(errorMsg);
+      console.error(errorMsg);
+    }
+  }
+
+  // Generate official vs fan content analysis
+  const contentAnalysis = generateOfficialVsFanReport(
+    query, content, officialSources, fanSources, 
+    canonConfirmations, speculationIndicators, allResults
+  );
+
+  const resultSummary = `Official vs fan content verification found ${allResults.length} relevant results from ${verificationStrategies.length} verification strategies.`;
+  const errorSummary = searchErrors.length > 0 ? `\nSearch errors: ${searchErrors.join(", ")}` : "";
+  
+  return `${resultSummary}${errorSummary}\n\n${contentAnalysis}`;
+}
+
+function generateOfficialVsFanReport(
+  query: string, content: string, officialSources: number, fanSources: number,
+  canonConfirmations: number, speculationIndicators: number, results: any[]
+): string {
+  const uniqueSources = [...new Set(results.map(r => new URL(r.link || "").hostname))];
+  
+  // Determine content type
+  let contentType = "UNKNOWN";
+  let confidence = "LOW";
+  let recommendation = "";
+  
+  if (officialSources > fanSources && canonConfirmations > 0) {
+    contentType = "OFFICIAL";
+    confidence = "HIGH";
+    recommendation = "This appears to be official, canon information from authoritative sources.";
+  } else if (officialSources > 0 && speculationIndicators === 0) {
+    contentType = "OFFICIAL";
+    confidence = "MEDIUM";
+    recommendation = "This appears to be official information, but limited confirmation available.";
+  } else if (fanSources > officialSources && speculationIndicators > 0) {
+    contentType = "FAN-MADE";
+    confidence = "HIGH";
+    recommendation = "This appears to be fan speculation or fan-made content.";
+  } else if (fanSources > 0) {
+    contentType = "FAN-MADE";
+    confidence = "MEDIUM";
+    recommendation = "This appears to be fan content or speculation.";
+  } else {
+    contentType = "UNVERIFIED";
+    confidence = "LOW";
+    recommendation = "Unable to determine if this is official or fan content. Additional verification needed.";
+  }
+
+  return `OFFICIAL VS FAN CONTENT VERIFICATION REPORT:
+Query: ${query}
+Content: ${content}
+
+CONTENT ANALYSIS:
+Content Type: ${contentType}
+Confidence: ${confidence}
+Official Sources: ${officialSources}
+Fan Sources: ${fanSources}
+Canon Confirmations: ${canonConfirmations}
+Speculation Indicators: ${speculationIndicators}
+
+SOURCES CHECKED: ${uniqueSources.length}
+${uniqueSources.slice(0, 10).map(source => `- ${source}`).join('\n')}
+
+RECOMMENDATION: ${recommendation}`;
 }

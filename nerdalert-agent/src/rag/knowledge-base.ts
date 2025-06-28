@@ -2,16 +2,20 @@ export interface KnowledgeEntry {
   id: string;
   title: string;
   content: string;
-  category: 'movie' | 'tv' | 'comic' | 'character' | 'event' | 'trivia';
+  category: 'movie' | 'tv' | 'comic' | 'character' | 'event' | 'trivia' | 'easter_egg' | 'behind_scenes' | 'fan_theory' | 'canon_info';
   franchise: string;
   releaseDate?: string;
-  status: 'announced' | 'in-production' | 'released' | 'cancelled';
+  status: 'announced' | 'in-production' | 'released' | 'cancelled' | 'established' | 'ongoing';
   verified: boolean;
   sources: string[];
   lastUpdated: string;
   confidence: 'HIGH' | 'MEDIUM' | 'LOW';
   canonStatus: 'CANON' | 'NON-CANON' | 'SPECULATION' | 'RUMOR';
   tags: string[];
+  triviaType?: 'behind_scenes' | 'easter_egg' | 'production' | 'casting' | 'script' | 'visual_effects' | 'music' | 'location' | 'costume' | 'prop' | 'origin';
+  verificationScore?: number; // 0-100 score for trivia accuracy
+  sourceAgreement?: number; // Number of sources that agree
+  conflictingSources?: string[]; // Sources that disagree
 }
 
 export interface RAGQuery {
@@ -168,9 +172,111 @@ export class NerdAlertKnowledgeBase {
         confidence: "HIGH",
         canonStatus: "CANON",
         tags: ["superhero", "family", "space"]
+      },
+      {
+        id: "spiderman-origin-comics",
+        title: "Spider-Man Origin Story",
+        content: "Peter Parker was bitten by a radioactive spider and gained spider-like abilities. First appeared in Amazing Fantasy #15 (1962).",
+        category: "character",
+        franchise: "Marvel",
+        status: "established",
+        verified: true,
+        sources: ["marvel.com", "marvel.fandom.com"],
+        lastUpdated: "2024-01-01",
+        confidence: "HIGH",
+        canonStatus: "CANON",
+        tags: ["origin", "radioactive", "spider", "uncle_ben"],
+        triviaType: "origin"
+      },
+      {
+        id: "batman-dark-knight-trivia",
+        title: "The Dark Knight Behind the Scenes",
+        content: "Heath Ledger's Joker performance was inspired by punk rock and A Clockwork Orange. The hospital explosion was real, not CGI.",
+        category: "trivia",
+        franchise: "DC",
+        status: "established",
+        verified: true,
+        sources: ["imdb.com", "variety.com"],
+        lastUpdated: "2024-01-01",
+        confidence: "HIGH",
+        canonStatus: "CANON",
+        tags: ["heath_ledger", "joker", "performance", "explosion"],
+        triviaType: "behind_scenes",
+        verificationScore: 95,
+        sourceAgreement: 8
+      },
+      {
+        id: "star-wars-luke-skywalker",
+        title: "Luke Skywalker Character",
+        content: "Luke Skywalker is the son of Anakin Skywalker and Padmé Amidala. He was raised on Tatooine by Owen and Beru Lars.",
+        category: "character",
+        franchise: "Star Wars",
+        status: "established",
+        verified: true,
+        sources: ["starwars.com", "wookieepedia.org"],
+        lastUpdated: "2024-01-01",
+        confidence: "HIGH",
+        canonStatus: "CANON",
+        tags: ["jedi", "force", "tatooine", "vader"],
+        triviaType: "origin"
+      },
+      {
+        id: "star-trek-kirk-canon",
+        title: "Captain Kirk Canon Information",
+        content: "James T. Kirk served as captain of the USS Enterprise (NCC-1701) during its five-year mission. Born in Riverside, Iowa.",
+        category: "canon_info",
+        franchise: "Star Trek",
+        status: "established",
+        verified: true,
+        sources: ["startrek.com", "memory-alpha.org"],
+        lastUpdated: "2024-01-01",
+        confidence: "HIGH",
+        canonStatus: "CANON",
+        tags: ["enterprise", "captain", "federation", "starfleet"],
+        verificationScore: 98,
+        sourceAgreement: 10
       }
     ];
 
     sampleEntries.forEach(entry => this.addEntry(entry));
+  }
+
+  // Enhanced trivia retrieval with type filtering
+  async getTriviaByType(triviaType: string, franchise?: string): Promise<KnowledgeEntry[]> {
+    const entries = Array.from(this.entries.values());
+    return entries.filter(entry => 
+      entry.triviaType === triviaType &&
+      (!franchise || entry.franchise === franchise)
+    );
+  }
+
+  // Get high-confidence trivia only
+  async getVerifiedTrivia(confidence: 'HIGH' | 'MEDIUM' | 'LOW' = 'HIGH'): Promise<KnowledgeEntry[]> {
+    const entries = Array.from(this.entries.values());
+    return entries.filter(entry => 
+      entry.category === 'trivia' && 
+      entry.confidence === confidence &&
+      entry.verified === true
+    );
+  }
+
+  // Get canon information for a specific topic
+  async getCanonInfo(topic: string, franchise: string): Promise<KnowledgeEntry | null> {
+    const entries = Array.from(this.entries.values());
+    const relevant = entries.filter(entry => 
+      entry.category === 'canon_info' &&
+      entry.franchise === franchise &&
+      (entry.title.toLowerCase().includes(topic.toLowerCase()) ||
+       entry.content.toLowerCase().includes(topic.toLowerCase()))
+    );
+
+    if (relevant.length === 0) return null;
+
+    // Return the entry with highest confidence and verification score
+    return relevant.sort((a, b) => {
+      const scoreA = (a.verificationScore || 0) + (a.confidence === 'HIGH' ? 100 : a.confidence === 'MEDIUM' ? 50 : 0);
+      const scoreB = (b.verificationScore || 0) + (b.confidence === 'HIGH' ? 100 : b.confidence === 'MEDIUM' ? 50 : 0);
+      return scoreB - scoreA;
+    })[0];
   }
 } 

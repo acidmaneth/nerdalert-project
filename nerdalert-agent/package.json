@@ -1,6 +1,6 @@
 {
   "name": "nerdalert-agent",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "A specialized AI agent for pop-culture enthusiasts with energy matching, conversation memory, enhanced date accuracy verification, and RAG (Retrieval-Augmented Generation) capabilities",
   "type": "module",
   "main": "dist/index.js",
@@ -13,14 +13,17 @@
     "node": ">=16"
   },
   "scripts": {
-    "start": "node dist/index.js",
-    "dev": "tsx watch ./src/index.ts",
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "test": "jest",
+    "test": "node test-enhanced-accuracy.js",
+    "test-fake-detection": "node test-fake-detection.js",
+    "test-all": "npm run test && npm run test-fake-detection",
     "test:research": "node test-research.js",
     "test:memory": "node test-memory.js",
     "test:dates": "node test-date-accuracy.js",
     "test:rag": "node test-rag.js",
+    "test:cast": "node test-cast-accuracy.js",
     "clean": "rm -rf dist"
   },
   "keywords": [

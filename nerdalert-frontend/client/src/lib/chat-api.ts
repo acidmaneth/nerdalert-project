@@ -25,6 +25,7 @@ const API_BASE = getApiBase();
 export interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
+  timestamp?: Date;
 }
 
 export interface SendMessageRequest {
@@ -35,16 +36,12 @@ export interface SendMessageResponse {
   response: string;
 }
 
-// Function to clean message content by removing internal thinking tags
+// Function to clean message content by removing internal thinking tags and tool calls
+// Only clean complete tags, don't modify partial chunks
 const cleanMessageContent = (content: string): string => {
-  return content
-    .replace(/<think>[\s\S]*?<\/think>/g, '') // Remove <think> tags and their content
-    .replace(/<processing>[\s\S]*?<\/processing>/g, '') // Remove <processing> tags
-    .replace(/<analysis>[\s\S]*?<\/analysis>/g, '') // Remove <analysis> tags
-    .replace(/<internal>[\s\S]*?<\/internal>/g, '') // Remove <internal> tags
-    .replace(/\[THINKING\][\s\S]*?\[\/THINKING\]/g, '') // Remove [THINKING] tags
-    .replace(/\[PROCESSING\][\s\S]*?\[\/PROCESSING\]/g, '') // Remove [PROCESSING] tags
-    .trim(); // Remove extra whitespace
+  // Don't process chunks that might be incomplete - just return as-is
+  // We'll clean the final content later when it's complete
+  return content;
 };
 
 export async function sendMessage(
@@ -63,30 +60,81 @@ export async function sendMessage(
   const decoder = new TextDecoder();
   let result = "";
   let buffer = "";
+  let isThinkingActive = false;
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    const chunk = decoder.decode(value, { stream: true });
-    buffer += chunk;
-    const lines = buffer.split("\n");
-    buffer = lines.pop() || "";
-    
-    for (const line of lines) {
-      if (line.startsWith("data: ")) {
-        const data = line.slice(6);
-        if (data === "[DONE]") continue;
-        try {
-          const parsed = JSON.parse(data);
-          const content = parsed.choices?.[0]?.delta?.content;
-          if (content) {
-            result += content;
-            if (onStreamChunk) onStreamChunk(content);
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      
+      const chunk = decoder.decode(value, { stream: true });
+      buffer += chunk;
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+      
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          const data = line.slice(6);
+          if (data === "[DONE]") {
+            // Stream is complete, stop thinking state
+            if (isThinkingActive && onThinking) {
+              onThinking(false);
+              isThinkingActive = false;
+            }
+            return { response: result };
           }
-        } catch (e) {
-          // Ignore parse errors
+          
+          try {
+            const parsed = JSON.parse(data);
+            
+            // Handle different chunk types
+            if (parsed.type === "error") {
+              throw new Error(parsed.error);
+            }
+            
+            // Check for tool calls - if present, enter thinking mode
+            if (parsed.choices?.[0]?.delta?.tool_calls) {
+              if (!isThinkingActive && onThinking) {
+                onThinking(true);
+                isThinkingActive = true;
+              }
+              // Don't add tool calls to the result
+              continue;
+            }
+            
+            // Check for content
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content && typeof content === 'string') {
+              // If we were thinking and now have content, stop thinking
+              if (isThinkingActive && onThinking) {
+                onThinking(false);
+                isThinkingActive = false;
+              }
+              
+              // Pass chunks through as-is to preserve all formatting and spaces
+              result += content;
+              if (onStreamChunk) onStreamChunk(content);
+            }
+            
+            // Handle finish reason
+            if (parsed.choices?.[0]?.finish_reason) {
+              if (isThinkingActive && onThinking) {
+                onThinking(false);
+                isThinkingActive = false;
+              }
+            }
+            
+          } catch (e) {
+            // Ignore parse errors for malformed chunks
+            console.warn("Failed to parse SSE chunk:", data);
+          }
         }
       }
+    }
+  } finally {
+    // Ensure thinking state is cleared
+    if (isThinkingActive && onThinking) {
+      onThinking(false);
     }
   }
   

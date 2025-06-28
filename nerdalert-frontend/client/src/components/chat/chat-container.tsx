@@ -11,33 +11,16 @@ export default function ChatContainer() {
   const [isTyping, setIsTyping] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [isOffline, setIsOffline] = useState(false);
   const [currentChatId, setCurrentChatId] = useState("1");
   const thinkTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Helper to clean <think> and internal tags from streamed chunks
-  const cleanMessageContent = (chunk: string): string => {
-    return chunk
-      .replace(/<think>[\s\S]*?<\/think>/gi, '')
-      .replace(/<processing>[\s\S]*?<\/processing>/gi, '')
-      .replace(/<analysis>[\s\S]*?<\/analysis>/gi, '')
-      .replace(/<internal>[\s\S]*?<\/internal>/gi, '')
-      .replace(/<search>[\s\S]*?<\/search>/gi, '')
-      .replace(/<verify>[\s\S]*?<\/verify>/gi, '')
-      .replace(/\[THINKING\][\s\S]*?\[\/THINKING\]/gi, '')
-      .replace(/\[PROCESSING\][\s\S]*?\[\/PROCESSING\]/gi, '')
-      .replace(/\[ANALYSIS\][\s\S]*?\[\/ANALYSIS\]/gi, '')
-      .replace(/\[INTERNAL\][\s\S]*?\[\/INTERNAL\]/gi, '')
-      .replace(/\*\*THINKING\*\*[\s\S]*?\*\*\/THINKING\*\*/gi, '')
-      .replace(/\*\*PROCESSING\*\*[\s\S]*?\*\*\/PROCESSING\*\*/gi, '')
-      .replace(/\*\*ANALYSIS\*\*[\s\S]*?\*\*\/ANALYSIS\*\*/gi, '')
-      .replace(/\*\*INTERNAL\*\*[\s\S]*?\*\*\/INTERNAL\*\*/gi, '');
-  };
+  // Note: Content cleaning is handled in the MessageList component after full message assembly
 
-  // Fetch the welcome message from the agent on first load
+  // Initialize with welcome message
   useEffect(() => {
-    if (messages.length === 0) {
-      setIsInitializing(true);
-      setIsTyping(true);
+    if (messages.length === 0 && isInitializing) {
+      // Don't set isTyping during initialization - keep it false
       setIsThinking(false);
       
       // Use the same API base as the chat-api.ts
@@ -61,94 +44,157 @@ export default function ChatContainer() {
         return 'https://nerdalert.app';
       };
       
-      const apiBase = getApiBase();
-      
-      fetch(`${apiBase}/start`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      }).then(async (res) => {
-        if (!res.body) return;
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let result = "";
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split("\n");
-          for (const line of lines) {
-            if (line.startsWith("data: ")) {
-              const data = line.slice(6);
-              if (data === "[DONE]") continue;
-              try {
-                const parsed = JSON.parse(data);
-                const content = parsed.choices?.[0]?.delta?.content;
-                if (content) {
-                  result += content;
-                  setMessages([{ role: "assistant" as const, content: cleanMessageContent(result) }]);
-                }
-              } catch (e) {
-                // Ignore parse errors
-              }
-            }
+      const initializeAgent = async () => {
+        console.log("🚀 Starting 5-second initialization sequence...");
+        const startTime = Date.now();
+        const minDisplayTime = 5000; // 5 seconds minimum
+        
+        try {
+          // Start health check
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000);
+          
+          const response = await fetch(`${getApiBase()}/health`, {
+            method: 'GET',
+            signal: controller.signal,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) {
+            throw new Error(`Health check failed: ${response.status}`);
           }
+          
+          console.log("✅ Health check successful! Continuing initialization...");
+          
+          // Ensure we show the loading screen for at least 5 seconds
+          const elapsed = Date.now() - startTime;
+          const remainingTime = Math.max(0, minDisplayTime - elapsed);
+          
+          if (remainingTime > 0) {
+            console.log(`⏳ Waiting ${remainingTime}ms more to complete 5-second initialization...`);
+            await new Promise(resolve => setTimeout(resolve, remainingTime));
+          }
+          
+          console.log("🎉 Initialization complete! Loading chat with welcome message...");
+          
+          // Connection successful - show pre-made welcome message
+          const welcomeMessage: ChatMessage = {
+            role: "assistant" as const,
+            content: `# 🤖 **NerdAlert AI** - *Your Pop-Culture Companion*
+
+**SYSTEM STATUS:** *ONLINE* ✅  
+**NEURAL NETWORKS:** *ACTIVE* 🧠  
+**KNOWLEDGE BASE:** *LOADED* 📚  
+**ENERGY MATCHING:** *CALIBRATED* ⚡
+
+---
+
+Hey there, fellow geek! 🎮✨ I'm **NerdAlert**, your AI companion for all things pop-culture, tech, and beyond! Whether you're diving into the latest Marvel theories, exploring sci-fi universes, or just want to chat about your favorite fandoms - I'm here to match your energy and dive deep into whatever gets you excited!
+
+**What can we explore together?**
+- 🎬 Movies, TV shows, and streaming recommendations
+- 🦸‍♂️ Comic book lore and superhero deep-dives  
+- 🎮 Gaming news, reviews, and easter eggs
+- 🚀 Sci-fi, fantasy, and speculative fiction
+- 🎭 Fan theories, trivia, and behind-the-scenes secrets
+- 🔬 Tech trends and futuristic concepts
+
+**Ready to geek out?** Just ask me anything - I'll match your enthusiasm and bring the insider knowledge! 🚀
+
+*What's on your mind today?*`,
+            timestamp: new Date()
+          };
+          
+          setMessages([welcomeMessage]);
+          setIsInitializing(false);
+          
+        } catch (error) {
+          console.error("❌ Connection failed:", error);
+          
+          // Still ensure minimum display time even on error
+          const elapsed = Date.now() - startTime;
+          const remainingTime = Math.max(0, minDisplayTime - elapsed);
+          
+          if (remainingTime > 0) {
+            await new Promise(resolve => setTimeout(resolve, remainingTime));
+          }
+          
+          // Connection failed - show offline alert
+          setIsOffline(true);
+          setIsInitializing(false);
         }
-        setIsTyping(false);
-        setIsInitializing(false);
-        setIsThinking(false);
-      }).catch((error) => {
-        console.error("Failed to initialize agent:", error);
-        setIsTyping(false);
-        setIsInitializing(false);
-        setIsThinking(false);
-        // Add a fallback welcome message
-        setMessages([{ 
-          role: "assistant" as const, 
-          content: "> WELCOME TO THE NEURAL INTERFACE\n> I'M NERDALERT, YOUR CYBERPUNK AI COMPANION\n> READY TO DISCUSS POP CULTURE, TECH, COMICS & MORE\n> TYPE YOUR QUERY TO BEGIN..." 
-        }]);
-      });
+      };
+
+      // Start the 5-second initialization check
+      initializeAgent();
     }
-  }, [messages.length]);
+  }, [messages.length, isInitializing]);
 
   const handleSendMessage = async (content: string) => {
-    const userMessage: ChatMessage = { role: "user", content };
+    const userMessage: ChatMessage = { 
+      role: "user", 
+      content,
+      timestamp: new Date()
+    };
     setMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
     setIsThinking(false);
+    
     let thinkStart = 0;
-    await sendMessage(
-      { messages: [...messages, userMessage] },
-      (chunk) => {
-        setMessages(prev => {
-          const newMessages = [...prev];
-          const lastMessage = newMessages[newMessages.length - 1];
-          if (lastMessage && lastMessage.role === "assistant") {
-            lastMessage.content += cleanMessageContent(chunk);
+    let hasStartedResponse = false;
+    
+    try {
+      await sendMessage(
+        { messages: [...messages, userMessage] },
+        (chunk) => {
+          hasStartedResponse = true;
+          setMessages(prev => {
+            const newMessages = [...prev];
+            const lastMessage = newMessages[newMessages.length - 1];
+            if (lastMessage && lastMessage.role === "assistant") {
+              lastMessage.content += chunk;
+            } else {
+              newMessages.push({ 
+                role: "assistant", 
+                content: chunk,
+                timestamp: new Date()
+              });
+            }
+            return newMessages;
+          });
+        },
+        (thinking) => {
+          if (thinking && !hasStartedResponse) {
+            thinkStart = Date.now();
+            setIsThinking(true);
           } else {
-            newMessages.push({ role: "assistant", content: cleanMessageContent(chunk) });
-          }
-          return newMessages;
-        });
-      },
-      (thinking) => {
-        if (thinking) {
-          thinkStart = Date.now();
-          setIsThinking(true);
-        } else {
-          const elapsed = Date.now() - thinkStart;
-          const minTime = 800;
-          if (elapsed < minTime) {
-            if (thinkTimeout.current) clearTimeout(thinkTimeout.current);
-            thinkTimeout.current = setTimeout(() => setIsThinking(false), minTime - elapsed);
-          } else {
-            setIsThinking(false);
+            const elapsed = Date.now() - thinkStart;
+            const minTime = 800;
+            if (elapsed < minTime && thinkStart > 0) {
+              if (thinkTimeout.current) clearTimeout(thinkTimeout.current);
+              thinkTimeout.current = setTimeout(() => setIsThinking(false), minTime - elapsed);
+            } else {
+              setIsThinking(false);
+            }
           }
         }
-      }
-    );
-    setIsTyping(false);
-    setIsThinking(false);
+      );
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      // Add error message
+      setMessages(prev => [...prev, { 
+        role: "assistant" as const, 
+        content: "Sorry, I encountered an error processing your request. Please try again.",
+        timestamp: new Date()
+      }]);
+    } finally {
+      setIsTyping(false);
+      setIsThinking(false);
+    }
   };
 
   const handleNewChat = async () => {
@@ -167,53 +213,48 @@ export default function ChatContainer() {
   // Show loading screen when initializing
   if (isInitializing) {
     return (
-      <div className="flex flex-col h-screen">
-        {/* Header */}
-        <header className="relative z-30 border-b border-neon-cyan bg-cyber-dark/90 backdrop-blur-sm">
-          <div className="container mx-auto px-4 py-3">
-            <div className="flex items-center justify-between">
-              <div className="flex-1"></div>
-              <div className="flex items-center space-x-4">
-                <NerdAlertAvatar size="lg" />
-                <div>
-                  <h1 className="text-3xl cyber-font font-bold text-neon-cyan text-glow animate-flicker">
-                    NERD<span className="text-neon-magenta">ALERT</span>
-                  </h1>
-                  <p className="text-xs text-gray-400 terminal-font text-center">CryptoAgent #3800 Ethereum Mainnet</p>
-                </div>
-              </div>
-              <div className="flex-1 flex justify-end items-center space-x-4">
-                <WalletButton />
-                <ChatSidebar 
-                  onNewChat={handleNewChat}
-                  onSelectChat={handleSelectChat}
-                  currentChatId={currentChatId}
-                />
-              </div>
+      <div className="flex flex-col h-screen bg-black text-green-400 font-mono">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="text-2xl font-bold animate-pulse">
+              INITIALIZING...
+            </div>
+            <div className="text-sm opacity-70">
+              connecting to decentralized systems...
+            </div>
+            <div className="flex justify-center space-x-1 mt-4">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-ping"></div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" style={{ animationDelay: '0.4s' }}></div>
             </div>
           </div>
-        </header>
+        </div>
+      </div>
+    );
+  }
 
-        {/* Loading Screen */}
-        <main className="flex-1 relative z-20 flex items-center justify-center bg-cyber-dark">
-          <div className="text-center space-y-6">
-            <div className="relative">
-              <NerdAlertAvatar size="lg" />
-              <div className="absolute inset-0 bg-neon-cyan rounded-full animate-pulse opacity-20"></div>
+  if (isOffline) {
+    return (
+      <div className="flex flex-col h-screen bg-black text-red-500 font-mono">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="text-3xl font-bold animate-pulse text-red-400">
+              ALERT ALERT AGENT OFFLINE!
             </div>
-            <div className="space-y-2">
-              <h2 className="text-2xl cyber-font font-bold text-neon-cyan text-glow">
-                NerdAlert Agent 3800
-              </h2>
-              <div className="flex items-center justify-center space-x-1">
-                <div className="w-2 h-2 bg-neon-magenta rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-neon-green rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              </div>
-              <p className="text-xl text-neon-cyan terminal-font font-bold">INITIALIZING</p>
+            <div className="text-lg opacity-80">
+              Unable to establish connection to NerdAlert AI
             </div>
+            <div className="text-sm text-red-300 mt-4">
+              Please check your connection and try again
+            </div>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-6 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded border border-red-400 transition-colors"
+            >
+              RETRY CONNECTION
+            </button>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
@@ -254,8 +295,9 @@ export default function ChatContainer() {
             id: idx,
             timestamp: new Date(),
           }))}
-          isTyping={isTyping || isThinking}
+          isTyping={isTyping}
           isLoading={false}
+          isThinking={isThinking}
         />
       </main>
 

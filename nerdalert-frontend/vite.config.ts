@@ -28,5 +28,5 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
-  publicDir: path.resolve(import.meta.dirname, "attached_assets"),
+  publicDir: path.resolve(import.meta.dirname, "client", "public"),
 });

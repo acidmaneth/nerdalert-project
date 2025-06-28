@@ -127,14 +127,7 @@
   100% { transform: translateY(100vh); }
 }
 
-@keyframes glitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); }
-  40% { transform: translate(-2px, -2px); }
-  60% { transform: translate(2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-  100% { transform: translate(0); }
-}
+/* REMOVED: glitch keyframes not used */
 
 @keyframes typing {
   0%, 60% { opacity: 1; }
@@ -164,9 +157,7 @@
   animation: scanline 2s linear infinite;
 }
 
-.animate-glitch {
-  animation: glitch 0.3s ease-in-out;
-}
+/* REMOVED: animate-glitch class not used */
 
 .animate-typing {
   animation: typing 1.5s ease-in-out infinite;
@@ -200,12 +191,7 @@
   background: var(--neon-magenta);
 }
 
-/* Pixel perfect borders */
-.pixel-border {
-  border-image: linear-gradient(45deg, var(--neon-cyan), var(--neon-magenta)) 1;
-  border-style: solid;
-  border-width: 2px;
-}
+/* Pixel perfect borders - REMOVED: pixel-border class not used */
 
 /* Pixelated image rendering */
 .pixelated {
@@ -219,23 +205,7 @@
   transition: all 0.2s ease;
 }
 
-/* Custom input styling */
-.cyber-input {
-  background-color: var(--cyber-black);
-  border: 1px solid var(--neon-cyan);
-  color: var(--terminal-green);
-  font-family: 'Courier Prime', monospace;
-}
-
-.cyber-input:focus {
-  outline: none;
-  border-color: var(--neon-magenta);
-  box-shadow: 0 0 10px var(--neon-magenta);
-}
-
-.cyber-input::placeholder {
-  color: hsl(240, 5%, 64.9%);
-}
+/* Custom input styling - REMOVED: cyber-input class not used */
 
 /* Button styles */
 .cyber-button {
