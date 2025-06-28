@@ -79,11 +79,19 @@ const handlePrompt = async (req: Request, res: StreamResponse) => {
                 res.write("data: [DONE]\n\n");
                 break;
               }
-              // Forward the chunk directly
-              res.write(value);
-              // Flush the response
-              if (typeof res.flush === "function") {
-                res.flush();
+              // Ensure each chunk is a complete 'data: ...' line
+              const chunkStr = value instanceof Buffer ? value.toString() : new TextDecoder().decode(value);
+              const lines = chunkStr.split('\n');
+              for (const line of lines) {
+                if (line.trim()) {
+                  // If the line already starts with 'data: ', write as-is
+                  if (line.startsWith('data: ')) {
+                    res.write(line.endsWith('\n') ? line : line + '\n');
+                  } else {
+                    // Otherwise, wrap it as a data line
+                    res.write(`data: ${line}\n\n`);
+                  }
+                }
               }
             }
           } catch (error) {
