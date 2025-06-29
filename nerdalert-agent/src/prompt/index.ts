@@ -6,7 +6,7 @@ import axios from "axios"; // Import axios
 import { ChatCompletionChunk, ChatCompletionMessageParam } from "openai/resources/chat";
 
 import type { PromptPayload } from "./types.js";
-import { conversationMemory, extractTopicsFromMessage, analyzeAgentResponse } from "./conversation-memory.js";
+import { conversationMemory, extractTopicsFromMessage, analyzeAgentResponse, detectCorrection } from "./conversation-memory.js";
 import { RAGService } from "../rag/rag-service.js";
 import {
   MODEL,
@@ -117,7 +117,114 @@ const generateMemoryContext = (sessionId?: string): string => {
   return memorySummary ? `\n\n${memorySummary}` : "";
 };
 
-const systemPromptWithDate = (sessionId?: string) => `${systemPrompt}
+// NEW: Detect user intent and determine response format
+const detectUserIntent = (userMessage: string): {
+  intent: 'list' | 'conversation' | 'deep_dive' | 'quick_fact' | 'general';
+  format: 'bulleted' | 'conversational' | 'detailed' | 'concise' | 'natural';
+  instructions: string;
+} => {
+  const message = userMessage.toLowerCase();
+  
+  // List indicators
+  const listPatterns = [
+    /list of/i, /list the/i, /what are the/i, /name the/i, /give me a list/i,
+    /top \d+/i, /best \d+/i, /worst \d+/i, /favorite \d+/i,
+    /examples of/i, /types of/i, /kinds of/i, /sorts of/i,
+    /bullet points/i, /bullet list/i, /numbered list/i,
+    /all the/i, /every/i, /each/i, /multiple/i
+  ];
+  
+  // Deep dive indicators
+  const deepDivePatterns = [
+    /deep dive/i, /in depth/i, /detailed/i, /comprehensive/i,
+    /explain in detail/i, /tell me everything/i, /full story/i,
+    /background/i, /history/i, /origin story/i, /behind the scenes/i,
+    /how did/i, /why did/i, /what happened/i, /what's the story/i,
+    /elaborate/i, /expand on/i, /more about/i, /tell me more/i
+  ];
+  
+  // Quick fact indicators
+  const quickFactPatterns = [
+    /quick/i, /fast/i, /brief/i, /short/i, /simple/i,
+    /just/i, /only/i, /basic/i, /main/i, /key/i,
+    /what is/i, /who is/i, /when is/i, /where is/i,
+    /one thing/i, /single/i, /fact/i, /info/i
+  ];
+  
+  // Conversation indicators
+  const conversationPatterns = [
+    /what do you think/i, /your opinion/i, /your thoughts/i,
+    /how do you feel/i, /do you like/i, /do you prefer/i,
+    /compare/i, /versus/i, /vs/i, /better/i, /worse/i,
+    /discuss/i, /talk about/i, /chat about/i, /conversation/i,
+    /debate/i, /argue/i, /disagree/i, /agree/i
+  ];
+  
+  // Check for list intent
+  if (listPatterns.some(pattern => pattern.test(message))) {
+    return {
+      intent: 'list',
+      format: 'bulleted',
+      instructions: `RESPONSE FORMAT: Use precise bullet points with short, direct descriptions. Get straight to the point with minimal added context. Keep each bullet concise and focused.`
+    };
+  }
+  
+  // Check for deep dive intent
+  if (deepDivePatterns.some(pattern => pattern.test(message))) {
+    return {
+      intent: 'deep_dive',
+      format: 'detailed',
+      instructions: `RESPONSE FORMAT: Provide comprehensive, detailed explanations with rich context, background information, and thorough analysis. Be thorough and educational.`
+    };
+  }
+  
+  // Check for quick fact intent
+  if (quickFactPatterns.some(pattern => pattern.test(message))) {
+    return {
+      intent: 'quick_fact',
+      format: 'concise',
+      instructions: `RESPONSE FORMAT: Keep responses brief and to the point. Provide essential information only with minimal elaboration.`
+    };
+  }
+  
+  // Check for conversation intent
+  if (conversationPatterns.some(pattern => pattern.test(message))) {
+    return {
+      intent: 'conversation',
+      format: 'conversational',
+      instructions: `RESPONSE FORMAT: Use natural, conversational language with personal opinions, engaging dialogue, and interactive elements. Be more casual and opinionated.`
+    };
+  }
+  
+  // Default to general
+  return {
+    intent: 'general',
+    format: 'natural',
+    instructions: `RESPONSE FORMAT: Use natural, balanced responses that match the user's energy and provide appropriate detail level.`
+  };
+};
+
+// Helper function to extract text content from Content type
+const extractTextContent = (content: string | Array<{type: string, text?: string, image_url?: any}>): string => {
+  if (typeof content === 'string') {
+    return content;
+  }
+  
+  // Handle ContentPart array
+  return content
+    .filter(part => part.type === 'text' && part.text)
+    .map(part => part.text)
+    .join(' ');
+};
+
+const systemPromptWithDate = (sessionId?: string, userMessage?: string) => {
+  const intent = userMessage ? detectUserIntent(userMessage) : {
+    intent: 'general',
+    format: 'natural',
+    instructions: `RESPONSE FORMAT: Use natural, balanced responses that match the user's energy and provide appropriate detail level.`
+  };
+  
+  return `${systemPrompt}
 
 CURRENT CONTEXT: Today is ${currentDateTime.date}, ${currentDateTime.year}
 
@@ -132,8 +239,11 @@ CONVERSATION STYLE:
 - Be enthusiastic and engaging about pop culture
 - Don't repeat information already discussed in this session
 - Answer directly without over-analyzing
-- Match the user's energy level${generateMemoryContext(sessionId)}
+- Match the user's energy level
+
+${intent.instructions}${generateMemoryContext(sessionId)}
 `;
+};
 
 // Brave Search function
 async function performWebSearch(query: string): Promise<any[]> {
@@ -174,6 +284,103 @@ function normalizeSearchResults(results: any[]): any[] {
     snippet: result.description,
     source: 'brave'
   }));
+}
+
+// NEW: Enhanced accuracy checking function
+async function check_accuracy_before_response(claim: string, topic: string): Promise<string> {
+  console.log(`Checking accuracy for claim: ${claim}`);
+  
+  try {
+    // First check RAG knowledge base
+    const ragResult = await ragService.enhancedSearch(claim, undefined, undefined);
+    
+    if (ragResult.ragResults.length > 0 && ragResult.confidence === "HIGH") {
+      // Cross-reference with web search for verification
+      const verificationResults = await performWebSearch(`"${claim}" site:imdb.com OR site:marvel.com OR site:dc.com OR site:starwars.com`);
+      
+      if (verificationResults.length > 0) {
+        return `ACCURACY CHECK: HIGH confidence - claim verified by knowledge base and official sources`;
+      }
+    }
+    
+    // If not in knowledge base, perform comprehensive verification
+    const searchStrategies = [
+      { q: `"${claim}" site:imdb.com OR site:marvel.com OR site:dc.com`, description: "Official sources" },
+      { q: `"${claim}" site:variety.com OR site:hollywoodreporter.com`, description: "Industry news" },
+      { q: `"${claim}" site:*.fandom.com`, description: "Fan wikis" }
+    ];
+    
+    let verificationCount = 0;
+    let officialSourceCount = 0;
+    
+    for (const strategy of searchStrategies) {
+      try {
+        const results = await performWebSearch(strategy.q);
+        if (results.length > 0) {
+          verificationCount++;
+          if (strategy.description === "Official sources") {
+            officialSourceCount++;
+          }
+        }
+      } catch (error) {
+        console.error(`Verification strategy failed: ${(error as Error).message}`);
+      }
+    }
+    
+    if (officialSourceCount >= 1 && verificationCount >= 2) {
+      return `ACCURACY CHECK: HIGH confidence - verified by ${verificationCount} sources (${officialSourceCount} official)`;
+    } else if (verificationCount >= 1) {
+      return `ACCURACY CHECK: MEDIUM confidence - verified by ${verificationCount} sources`;
+    } else {
+      return `ACCURACY CHECK: LOW confidence - insufficient verification sources found`;
+    }
+    
+  } catch (error) {
+    return `ACCURACY CHECK: ERROR - ${(error as Error).message}`;
+  }
+}
+
+// NEW: Handle user corrections
+async function handle_user_correction(correction: string, originalTopic: string): Promise<string> {
+  console.log(`Handling user correction: ${correction}`);
+  
+  try {
+    // Extract the corrected information
+    const correctionMatch = correction.match(/(?:actually|in fact|the truth is|correctly|it's not|it is not|the correct|the right|the actual|the fact is|the truth is)\s+(.+)/i);
+    const correctedInfo = correctionMatch ? correctionMatch[1].trim() : correction;
+    
+    // Research the corrected information
+    const searchResults = await performWebSearch(`"${correctedInfo}" ${originalTopic} site:imdb.com OR site:marvel.com OR site:dc.com OR site:starwars.com`);
+    
+    if (searchResults.length > 0) {
+      // Verify the correction with multiple sources
+      const verificationResults = await performWebSearch(`"${correctedInfo}" verified confirmed site:variety.com OR site:hollywoodreporter.com`);
+      
+      let confidence = "MEDIUM";
+      if (verificationResults.length > 0) {
+        confidence = "HIGH";
+      }
+      
+      return `CORRECTION VERIFICATION:
+Original Topic: ${originalTopic}
+User Correction: ${correctedInfo}
+Verification: ${searchResults.length} sources found
+Confidence: ${confidence}
+Status: Correction appears to be accurate
+Recommendation: Use corrected information for future discussions`;
+    } else {
+      return `CORRECTION VERIFICATION:
+Original Topic: ${originalTopic}
+User Correction: ${correctedInfo}
+Verification: Limited sources found
+Confidence: LOW
+Status: Correction needs additional verification
+Recommendation: Research further before accepting correction`;
+    }
+    
+  } catch (error) {
+    return `CORRECTION VERIFICATION ERROR: ${(error as Error).message}`;
+  }
 }
 
 // CONSOLIDATED TOOL 1: Smart Search (replaces web_search, deep_trivia_search, rag_enhanced_search)
@@ -374,7 +581,7 @@ async function rag_lookup(query: string, category?: string, franchise?: string):
   }
 }
 
-// Update the tools array to use only the 3 consolidated tools
+// Update the tools array to include the new accuracy and correction tools
 const tools = [
   {
     type: "function" as const,
@@ -443,6 +650,48 @@ const tools = [
           },
         },
         required: ["query"],
+      },
+    },
+  },
+  {
+    type: "function" as const,
+    function: {
+      name: "check_accuracy_before_response",
+      description: "Check the accuracy of a claim before responding to ensure information is verified and reliable.",
+      parameters: {
+        type: "object" as const,
+        properties: {
+          claim: {
+            type: "string",
+            description: "The claim or information to verify before sharing.",
+          },
+          topic: {
+            type: "string",
+            description: "The topic or context of the claim.",
+          },
+        },
+        required: ["claim", "topic"],
+      },
+    },
+  },
+  {
+    type: "function" as const,
+    function: {
+      name: "handle_user_correction",
+      description: "Handle user corrections by verifying the corrected information and updating understanding.",
+      parameters: {
+        type: "object" as const,
+        properties: {
+          correction: {
+            type: "string",
+            description: "The user's correction message or corrected information.",
+          },
+          originalTopic: {
+            type: "string",
+            description: "The original topic that was being discussed.",
+          },
+        },
+        required: ["correction", "originalTopic"],
       },
     },
   },
@@ -621,6 +870,31 @@ export const prompt = async (
   // Generate session ID if not provided
   const sessionId = payload.sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   
+  // Check if user is correcting the agent
+  let isCorrection = false;
+  let correctionInfo = null;
+  
+  if (payload.messages && payload.messages.length > 0) {
+    const lastMessage = payload.messages[payload.messages.length - 1];
+    if (lastMessage.role === "user" && typeof lastMessage.content === "string") {
+      correctionInfo = detectCorrection(lastMessage.content);
+      isCorrection = correctionInfo.isCorrection;
+      
+      if (isCorrection) {
+        console.log("User correction detected:", correctionInfo);
+        // Store the correction in memory
+        if (correctionInfo.correctedInfo) {
+          conversationMemory.addCorrection(sessionId, {
+            originalClaim: "Previous incorrect information",
+            correctedInfo: correctionInfo.correctedInfo,
+            topic: "User correction",
+            confidence: correctionInfo.confidence || 'MEDIUM'
+          });
+        }
+      }
+    }
+  }
+  
   // Track topics from the latest user message
   if (payload.messages && payload.messages.length > 0) {
     const lastMessage = payload.messages[payload.messages.length - 1];
@@ -643,7 +917,7 @@ export const prompt = async (
   const initialMessages: Array<ChatCompletionMessageParam> = [
     {
       role: "system",
-      content: systemPromptWithDate(sessionId),
+      content: systemPromptWithDate(sessionId, extractTextContent(payload.messages[payload.messages.length - 1].content)),
     },
     ...(payload.messages as Array<ChatCompletionMessageParam>),
   ];
@@ -698,6 +972,10 @@ export const prompt = async (
         functionResponse = await verify_information(functionArgs.content, functionArgs.verification_type || "facts");
       } else if (functionName === "rag_lookup") {
         functionResponse = await rag_lookup(functionArgs.query, functionArgs.category, functionArgs.franchise);
+      } else if (functionName === "check_accuracy_before_response") {
+        functionResponse = await check_accuracy_before_response(functionArgs.claim, functionArgs.topic);
+      } else if (functionName === "handle_user_correction") {
+        functionResponse = await handle_user_correction(functionArgs.correction, functionArgs.originalTopic);
       } else {
         functionResponse = `Error: Unknown tool '${functionName}'.`;
       }

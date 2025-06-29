@@ -14,26 +14,26 @@ NerdAlert is a specialized AI agent designed for pop-culture enthusiasts, geeks,
 - **Trivia & Insider Info**: Character lore, easter eggs, and behind-the-scenes details
 - **Adaptive Personality**: Matches user's enthusiasm level and interests
 - **Accuracy Focus**: Pop-culture trivia is sacred - all facts are verified through authoritative sources
+- **Correction Handling**: Learns from user corrections and prevents repeating mistakes
+- **Dynamic Response Formatting**: Automatically adapts response style based on user intent (lists, deep dives, quick facts, conversations)
 
-## 🚀 Recent Updates (v1.3.0)
+## 🚀 Recent Updates (v1.4.0)
 
-### ✨ New Features
-- **RAG (Retrieval-Augmented Generation)**: Enhanced knowledge base with vector search for accurate, verified information
-- **Knowledge Base Integration**: Maintains verified facts with confidence levels and source attribution
-- **Enhanced Research System**: Multi-strategy deep research with specialized search types
-- **Source Prioritization**: Official sources (marvel.com, dc.com, etc.) prioritized over speculation
-- **Deep Trivia Search**: Specialized research for character details, plot points, dates, and canon information
-- **Accuracy Verification**: Cross-referencing information from multiple authoritative sources
-- **Fan Site Integration**: Direct access to fandom.com, memory-alpha.org, wookieepedia.org, and more
-- **Repetition Prevention**: Advanced memory system prevents duplicate explanations
-- **Natural Conversation Flow**: No more internal thinking tags or over-analysis
+### ✨ New Accuracy Features
+- **Prevention-First Approach**: Verifies information before responding to prevent false claims
+- **User Correction Detection**: Automatically detects when users are correcting the agent
+- **Correction Memory System**: Remembers corrections to prevent repeating mistakes
+- **Enhanced Accuracy Checking**: Pre-verification of all claims against authoritative sources
+- **Confidence Level Reporting**: Transparent accuracy levels (HIGH/MEDIUM/LOW) for all information
+- **Multiple Source Verification**: Cross-references information from multiple authoritative sources
+- **Humble Correction Acknowledgment**: Thanks users for corrections and shows appreciation for their knowledge
 
 ### 🔧 Technical Improvements
-- **Multi-Strategy Search**: 5 different search strategies for comprehensive coverage
-- **Source Authority Scoring**: Results prioritized by source credibility
-- **Duplicate Detection**: Intelligent filtering of repetitive content
-- **Enhanced Memory System**: Better tracking of discussed topics and concepts
-- **Improved Error Handling**: Graceful fallback when search strategies fail
+- **New Accuracy Tools**: `check_accuracy_before_response()` and `handle_user_correction()`
+- **Enhanced Conversation Memory**: Tracks corrections with confidence levels and timestamps
+- **Pattern-Based Correction Detection**: Identifies various correction patterns in user messages
+- **Source Hierarchy**: Prioritizes official sources over speculation
+- **Real-Time Verification**: Checks claims against RAG knowledge base and web sources
 
 ## 📅 Enhanced Date Accuracy (v1.2.1)
 
@@ -231,7 +231,70 @@ npm run test:dates
 npm run test:memory
 ```
 
-### 🎭 Energy Matching Examples
+## 🎯 Accuracy & Correction Handling
+
+### Prevention-First Approach
+NerdAlert now **prevents false claims** rather than just correcting them:
+
+- **Pre-verification** of all claims before responding
+- **Multiple source cross-referencing** for every fact
+- **Confidence-based response filtering** - only share verified information
+- **Automatic fact-checking** for claims that seem uncertain
+
+### User Correction Handling
+When users correct the agent, it:
+
+- **Immediately acknowledges** the mistake and apologizes
+- **Thanks the user** for the correction and shows appreciation
+- **Re-researches** the topic with the corrected information
+- **Updates its understanding** for future discussions
+- **Never argues** with corrections - fans know their stuff
+
+### Example Correction Handling
+```
+User: "Actually, Tom Holland plays Spider-Man, not Andrew Garfield"
+Agent: "You're absolutely right! Thank you for the correction. Tom Holland has been playing Spider-Man in the MCU since 2016. I appreciate you keeping me accurate - fans know their stuff better than anyone!"
+```
+
+## 🎨 Dynamic Response Formatting
+
+NerdAlert now **automatically adapts its response style** based on what you're asking for:
+
+### **List Format** - For when you want lists
+**Triggers**: "list of", "top 5", "best", "examples of"
+```
+User: "List the top 5 Marvel movies"
+Agent: "Here are the top 5 Marvel movies:
+• Avengers: Endgame (2019) - Highest-grossing film
+• Black Panther (2018) - Cultural phenomenon
+• Iron Man (2008) - Started the MCU
+• The Avengers (2012) - First team-up
+• Captain America: Civil War (2016) - Epic conflict"
+```
+
+### **Deep Dive Format** - For comprehensive information
+**Triggers**: "deep dive", "tell me everything", "explain in detail", "background"
+```
+User: "Tell me everything about Spider-Man's origin story"
+Agent: "Spider-Man's origin story is one of the most iconic in comic book history. Peter Parker was a brilliant but socially awkward high school student who was bitten by a radioactive spider during a science demonstration. This transformative event granted him spider-like abilities including enhanced strength, agility, wall-crawling, and a precognitive 'spider-sense' that warns him of danger..."
+```
+
+### **Quick Fact Format** - For brief answers
+**Triggers**: "quick", "brief", "just", "simple"
+```
+User: "Quick answer: who plays Batman?"
+Agent: "Robert Pattinson plays Batman in The Batman (2022)."
+```
+
+### **Conversational Format** - For opinions and discussions
+**Triggers**: "what do you think", "your opinion", "how do you feel", "compare"
+```
+User: "What do you think about the latest Star Wars movie?"
+Agent: "Honestly, I think it's a mixed bag! The visual effects are absolutely stunning, and the action sequences are some of the best in the franchise. But I have to say, the pacing felt a bit off in the middle act. What did you think about it?"
+```
+
+### **Natural Format** - Default balanced responses
+For standard queries, NerdAlert provides balanced, natural responses that match your energy level.
 
 ## 🔧 Customizing NerdAlert
 
@@ -309,6 +372,11 @@ Test RAG capabilities:
 node test-rag.js
 ```
 
+Test accuracy improvements:
+```bash
+npm run test:accuracy
+```
+
 ## 📁 Available Commands
 
 - `npm run dev` — Start NerdAlert in development mode
@@ -318,6 +386,8 @@ node test-rag.js
 - `npm run test:rag` — Test RAG capabilities
 - `npm run test:memory` — Test memory system
 - `npm run test:dates` — Test date accuracy
+- `npm run test:accuracy` — Test accuracy improvements and correction handling
+- `npm run test:formatting` — Test dynamic response formatting
 
 ## 🔐 Environment Variables
 
@@ -362,6 +432,10 @@ NerdAlert is designed to work seamlessly with LocalAI for privacy-focused deploy
 5. **Search timeouts**
    - The system now has multiple fallback strategies. If one search fails, others will be attempted
 
+6. **False claims or inaccuracies**
+   - The new accuracy checking system should prevent this
+   - If you notice inaccuracies, correct the agent and it will learn from the correction
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see our contributing guidelines for more details.
@@ -373,6 +447,26 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 **Made with ❤️ for the geek community**
+
+## [1.4.0] - 2024-12-01
+
+### ✨ Accuracy Improvements & Correction Handling
+- **Prevention-First Approach**: Verifies information before responding to prevent false claims
+- **User Correction Detection**: Automatically detects when users are correcting the agent
+- **Correction Memory System**: Remembers corrections to prevent repeating mistakes
+- **Enhanced Accuracy Checking**: Pre-verification of all claims against authoritative sources
+- **Confidence Level Reporting**: Transparent accuracy levels (HIGH/MEDIUM/LOW) for all information
+- **Multiple Source Verification**: Cross-references information from multiple authoritative sources
+- **Humble Correction Acknowledgment**: Thanks users for corrections and shows appreciation for their knowledge
+
+### 🔧 Technical Improvements
+- **New Accuracy Tools**: `check_accuracy_before_response()` and `handle_user_correction()`
+- **Enhanced Conversation Memory**: Tracks corrections with confidence levels and timestamps
+- **Pattern-Based Correction Detection**: Identifies various correction patterns in user messages
+- **Source Hierarchy**: Prioritizes official sources over speculation
+- **Real-Time Verification**: Checks claims against RAG knowledge base and web sources
+
+---
 
 ## [1.3.3] - 2024-07-26
 

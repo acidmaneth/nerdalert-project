@@ -1,9 +1,19 @@
 import type { PromptPayload } from "./types.js";
 
+export interface Correction {
+  originalClaim: string;
+  correctedInfo: string;
+  topic: string;
+  timestamp: Date;
+  confidence: 'HIGH' | 'MEDIUM' | 'LOW';
+  sources?: string[];
+}
+
 export interface ConversationMemory {
   sessionId: string;
   discussedTopics: Set<string>;  // Keep - prevents topic repetition
   recentMessages: string[];     // Keep - prevents response repetition
+  corrections: Correction[];    // NEW: Track user corrections
   lastUpdate: Date;
   // Removed: mentionedCharacters, explainedConcepts, sharedTrivia, dateSensitiveInfo, verifiedFacts
 }
@@ -13,12 +23,14 @@ class ConversationMemoryManager {
   private readonly MAX_TOPICS_PER_SESSION = 20;  // Reduced from 50
   private readonly MAX_SESSIONS = 50;            // Reduced from 100
   private readonly MAX_RECENT_MESSAGES = 5;     // Reduced from 10
+  private readonly MAX_CORRECTIONS = 10;        // NEW: Limit corrections per session
 
   createMemory(sessionId: string): ConversationMemory {
     const memory: ConversationMemory = {
       sessionId,
       discussedTopics: new Set(),
       recentMessages: [],
+      corrections: [],           // NEW: Initialize corrections array
       lastUpdate: new Date(),
     };
     
@@ -55,6 +67,49 @@ class ConversationMemoryManager {
     memory.lastUpdate = new Date();
   }
 
+  // NEW: Add correction tracking
+  addCorrection(sessionId: string, correction: Omit<Correction, 'timestamp'>): void {
+    const memory = this.getMemory(sessionId) || this.createMemory(sessionId);
+    
+    const fullCorrection: Correction = {
+      ...correction,
+      timestamp: new Date()
+    };
+    
+    memory.corrections.push(fullCorrection);
+    memory.lastUpdate = new Date();
+    
+    // Keep only the most recent corrections
+    if (memory.corrections.length > this.MAX_CORRECTIONS) {
+      memory.corrections = memory.corrections.slice(-this.MAX_CORRECTIONS);
+    }
+  }
+
+  // NEW: Get recent corrections for a topic
+  getCorrectionsForTopic(sessionId: string, topic: string): Correction[] {
+    const memory = this.getMemory(sessionId);
+    if (!memory) return [];
+    
+    const topicLower = topic.toLowerCase();
+    return memory.corrections.filter(correction => 
+      correction.topic.toLowerCase().includes(topicLower) ||
+      correction.originalClaim.toLowerCase().includes(topicLower) ||
+      correction.correctedInfo.toLowerCase().includes(topicLower)
+    );
+  }
+
+  // NEW: Check if a claim has been corrected before
+  hasBeenCorrected(sessionId: string, claim: string): Correction | null {
+    const memory = this.getMemory(sessionId);
+    if (!memory) return null;
+    
+    const claimLower = claim.toLowerCase();
+    return memory.corrections.find(correction => 
+      correction.originalClaim.toLowerCase().includes(claimLower) ||
+      this.calculateSimilarity(claimLower, correction.originalClaim.toLowerCase()) > 0.6
+    ) || null;
+  }
+
   hasDiscussedTopic(sessionId: string, topic: string): boolean {
     const memory = this.getMemory(sessionId);
     return memory?.discussedTopics.has(topic.toLowerCase()) || false;
@@ -85,11 +140,24 @@ class ConversationMemoryManager {
     if (!memory) return "";
 
     const topics = Array.from(memory.discussedTopics).slice(-5); // Only last 5 topics
+    const recentCorrections = memory.corrections.slice(-3); // Last 3 corrections
 
-    if (topics.length === 0) return "";
+    let summary = "";
+    
+    if (topics.length > 0) {
+      summary += `PREVIOUS TOPICS: ${topics.join(", ")}\n`;
+      summary += `IMPORTANT: Don't repeat information about these topics unless specifically asked.\n`;
+    }
+    
+    if (recentCorrections.length > 0) {
+      summary += `\nRECENT CORRECTIONS:\n`;
+      recentCorrections.forEach(correction => {
+        summary += `- "${correction.originalClaim}" was corrected to "${correction.correctedInfo}"\n`;
+      });
+      summary += `IMPORTANT: Use corrected information when discussing these topics.\n`;
+    }
 
-    return `PREVIOUS TOPICS: ${topics.join(", ")}
-IMPORTANT: Don't repeat information about these topics unless specifically asked.`;
+    return summary;
   }
 
   private cleanupOldSessions(): void {
@@ -109,7 +177,7 @@ IMPORTANT: Don't repeat information about these topics unless specifically asked
 
 export const conversationMemory = new ConversationMemoryManager();
 
-// Simplified topic extraction
+// Enhanced topic extraction to detect corrections
 export function extractTopicsFromMessage(message: string): string[] {
   // Extract only clear topic words (no complex analysis)
   const topicMatches = message.match(/(?:about|regarding)\s+([^.!?]+)/gi);
@@ -118,6 +186,53 @@ export function extractTopicsFromMessage(message: string): string[] {
   return topicMatches
     .map(m => m.replace(/^(about|regarding)\s+/i, '').trim())
     .filter(topic => topic.length > 2 && topic.length < 50); // Reasonable topic length
+}
+
+// NEW: Detect if user is correcting the agent
+export function detectCorrection(message: string): {
+  isCorrection: boolean;
+  originalClaim?: string;
+  correctedInfo?: string;
+  topic?: string;
+  confidence?: 'HIGH' | 'MEDIUM' | 'LOW';
+} {
+  const messageLower = message.toLowerCase();
+  
+  // Patterns that indicate correction
+  const correctionPatterns = [
+    // Direct corrections
+    /(?:that's|that is|you're|you are) (?:wrong|incorrect|not right|mistaken)/i,
+    /(?:actually|in fact|the truth is|correctly)/i,
+    /(?:no,|nope,|wrong,|incorrect,)/i,
+    // Specific corrections
+    /(?:it's|it is) (?:not|actually|really) (.+)/i,
+    /(?:the correct|the right|the actual) (.+) (?:is|was)/i,
+    // Apology requests
+    /(?:you should|you need to) (?:apologize|say sorry|correct)/i,
+    // Fact corrections
+    /(?:the fact is|the truth is|actually) (.+)/i
+  ];
+  
+  for (const pattern of correctionPatterns) {
+    if (pattern.test(message)) {
+      // Try to extract the corrected information
+      const match = message.match(/(?:actually|in fact|the truth is|correctly|it's not|it is not|the correct|the right|the actual|the fact is|the truth is)\s+(.+)/i);
+      if (match) {
+        return {
+          isCorrection: true,
+          correctedInfo: match[1].trim(),
+          confidence: 'MEDIUM'
+        };
+      }
+      
+      return {
+        isCorrection: true,
+        confidence: 'LOW'
+      };
+    }
+  }
+  
+  return { isCorrection: false };
 }
 
 // Simplified response analysis (only track topics, not detailed analysis)

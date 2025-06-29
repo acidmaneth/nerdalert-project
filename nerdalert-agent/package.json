@@ -24,6 +24,8 @@
     "test:dates": "node test-date-accuracy.js",
     "test:rag": "node test-rag.js",
     "test:cast": "node test-cast-accuracy.js",
+    "test:accuracy": "node test-accuracy-improvements.js",
+    "test:formatting": "node test-response-formatting.js",
     "clean": "rm -rf dist"
   },
   "keywords": [

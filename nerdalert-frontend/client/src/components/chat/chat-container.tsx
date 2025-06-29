@@ -93,7 +93,7 @@ export default function ChatContainer() {
 
 ---
 
-Hey there, fellow geek! 🎮✨ I'm **NerdAlert**, your AI companion for all things pop-culture, tech, and beyond! Whether you're diving into the latest Marvel theories, exploring sci-fi universes, or just want to chat about your favorite fandoms - I'm here to match your energy and dive deep into whatever gets you excited!
+Hello there! 🎮✨ I'm **NerdAlert**, your AI companion for all things pop-culture, tech, and beyond! Whether you're diving into the latest Marvel theories, exploring sci-fi universes, or just want to chat about your favorite fandoms - I'm here to match your energy and dive deep into whatever gets you excited!
 
 **What can we explore together?**
 - 🎬 Movies, TV shows, and streaming recommendations
