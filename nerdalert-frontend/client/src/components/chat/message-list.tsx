@@ -3,6 +3,7 @@ import NerdAlertAvatar from "./nerdalert-avatar";
 import TypingIndicator from "./typing-indicator";
 import type { Message } from "@shared/schema";
 import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 
 interface MessageListProps {
   messages: Message[];
@@ -184,7 +185,7 @@ export default function MessageList({ messages, isTyping, isLoading, isThinking 
                 }`}
               >
                 {message.role === "assistant" ? (
-                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>{message.content}</ReactMarkdown>
                 ) : (
                   message.content.split('\n').map((line, index) => (
                     <div key={index}>{line}</div>

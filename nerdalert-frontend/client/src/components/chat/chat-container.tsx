@@ -148,21 +148,24 @@ Hey there, fellow geek! 🎮✨ I'm **NerdAlert**, your AI companion for all thi
     let hasStartedResponse = false;
     
     try {
+      let assistantMessageIndex: number | null = null;
       await sendMessage(
         { messages: [...messages, userMessage] },
         (chunk) => {
-          hasStartedResponse = true;
           setMessages(prev => {
             const newMessages = [...prev];
-            const lastMessage = newMessages[newMessages.length - 1];
-            if (lastMessage && lastMessage.role === "assistant") {
-              lastMessage.content += chunk;
-            } else {
-              newMessages.push({ 
-                role: "assistant", 
+            // Find the last assistant message after the user message
+            if (assistantMessageIndex === null) {
+              // First chunk: add new assistant message
+              newMessages.push({
+                role: "assistant",
                 content: chunk,
                 timestamp: new Date()
               });
+              assistantMessageIndex = newMessages.length - 1;
+            } else {
+              // Subsequent chunks: append to the last assistant message
+              newMessages[assistantMessageIndex].content += chunk;
             }
             return newMessages;
           });
