@@ -1,0 +1,973 @@
+{
+  "correction_1751222885288_yzq370422": {
+    "originalClaim": "Andrew Garfield plays Spider-Man in the MCU",
+    "correctedInfo": "Tom Holland plays Spider-Man in the MCU",
+    "topic": "Andrew Garfield plays Spider-Man in the MCU",
+    "category": "cast",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "andrew garfield plays spider-man in the mcu",
+      "tom holland plays spider-man in the mcu"
+    ],
+    "id": "correction_1751222885288_yzq370422",
+    "correctedAt": "2025-06-29T18:48:05.288Z",
+    "lastVerified": "2025-06-29T18:48:05.288Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751223011027_i54kh7e0z": {
+    "originalClaim": "Andrew Garfield plays Spider-Man",
+    "correctedInfo": "Tom Holland plays Spider-Man",
+    "topic": "Andrew Garfield plays Spider-Man",
+    "category": "cast",
+    "franchise": "Marvel",
+    "confidence": "MEDIUM",
+    "correctedBy": "user",
+    "tags": [
+      "andrew garfield plays spider-man",
+      "tom holland plays spider-man"
+    ],
+    "id": "correction_1751223011027_i54kh7e0z",
+    "correctedAt": "2025-06-29T18:50:11.027Z",
+    "lastVerified": "2025-06-29T18:50:11.027Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226395212_ix8zrl7jb": {
+    "originalClaim": "Andrew Garfield plays Spider-Man in the MCU",
+    "correctedInfo": "Tom Holland plays Spider-Man in the MCU since 2016",
+    "topic": "Andrew Garfield plays Spider-Man in the MCU",
+    "category": "cast",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "andrew garfield plays spider-man in the mcu",
+      "tom holland plays spider-man in the mcu since 2016"
+    ],
+    "id": "correction_1751226395212_ix8zrl7jb",
+    "correctedAt": "2025-06-29T19:46:35.212Z",
+    "lastVerified": "2025-06-29T19:46:35.212Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226395321_7ndvp0k2v": {
+    "originalClaim": "Chris Evans plays Captain America in all MCU movies",
+    "correctedInfo": "Chris Evans plays Captain America in most MCU movies, but Anthony Mackie takes over as Captain America in The Falcon and the Winter Soldier",
+    "topic": "Chris Evans plays Captain America in all MCU movies",
+    "category": "cast",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "chris evans plays captain america in all mcu movies",
+      "chris evans plays captain america in most mcu movies, but anthony mackie takes over as captain america in the falcon and the winter soldier"
+    ],
+    "id": "correction_1751226395321_7ndvp0k2v",
+    "correctedAt": "2025-06-29T19:46:35.321Z",
+    "lastVerified": "2025-06-29T19:46:35.321Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226395427_qrz4ok82g": {
+    "originalClaim": "Robert Downey Jr. is still playing Iron Man",
+    "correctedInfo": "Robert Downey Jr. played Iron Man from 2008 to 2019, but his character died in Avengers: Endgame",
+    "topic": "Robert Downey Jr. is still playing Iron Man",
+    "category": "cast",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "robert downey jr. is still playing iron man",
+      "robert downey jr. played iron man from 2008 to 2019, but his character died in avengers: endgame"
+    ],
+    "id": "correction_1751226395427_qrz4ok82g",
+    "correctedAt": "2025-06-29T19:46:35.427Z",
+    "lastVerified": "2025-06-29T19:46:35.427Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226395532_zkgad51tl": {
+    "originalClaim": "Scarlett Johansson plays Black Widow in current MCU",
+    "correctedInfo": "Scarlett Johansson played Black Widow until 2021, but her character died in Avengers: Endgame",
+    "topic": "Scarlett Johansson plays Black Widow in current MCU",
+    "category": "cast",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "scarlett johansson plays black widow in current mcu",
+      "scarlett johansson played black widow until 2021, but her character died in avengers: endgame"
+    ],
+    "id": "correction_1751226395532_zkgad51tl",
+    "correctedAt": "2025-06-29T19:46:35.532Z",
+    "lastVerified": "2025-06-29T19:46:35.532Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226395638_n2q3oa97x": {
+    "originalClaim": "Chris Hemsworth plays Thor in all MCU movies",
+    "correctedInfo": "Chris Hemsworth plays Thor in most MCU movies, but Natalie Portman also plays Thor in Thor: Love and Thunder",
+    "topic": "Chris Hemsworth plays Thor in all MCU movies",
+    "category": "cast",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "chris hemsworth plays thor in all mcu movies",
+      "chris hemsworth plays thor in most mcu movies, but natalie portman also plays thor in thor: love and thunder"
+    ],
+    "id": "correction_1751226395638_n2q3oa97x",
+    "correctedAt": "2025-06-29T19:46:35.638Z",
+    "lastVerified": "2025-06-29T19:46:35.638Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226395745_tzvteo6b2": {
+    "originalClaim": "Iron Man came out in 2009",
+    "correctedInfo": "Iron Man was released on May 2, 2008",
+    "topic": "Iron Man came out in 2009",
+    "category": "date",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "iron man came out in 2009",
+      "iron man was released on may 2, 2008"
+    ],
+    "id": "correction_1751226395745_tzvteo6b2",
+    "correctedAt": "2025-06-29T19:46:35.745Z",
+    "lastVerified": "2025-06-29T19:46:35.745Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226395852_12qrxbtnm": {
+    "originalClaim": "Avengers: Endgame came out in 2020",
+    "correctedInfo": "Avengers: Endgame was released on April 26, 2019",
+    "topic": "Avengers: Endgame came out in 2020",
+    "category": "date",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "avengers: endgame came out in 2020",
+      "avengers: endgame was released on april 26, 2019"
+    ],
+    "id": "correction_1751226395852_12qrxbtnm",
+    "correctedAt": "2025-06-29T19:46:35.852Z",
+    "lastVerified": "2025-06-29T19:46:35.852Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226395960_kv1z3d3qm": {
+    "originalClaim": "Black Panther came out in 2019",
+    "correctedInfo": "Black Panther was released on February 16, 2018",
+    "topic": "Black Panther came out in 2019",
+    "category": "date",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "black panther came out in 2019",
+      "black panther was released on february 16, 2018"
+    ],
+    "id": "correction_1751226395960_kv1z3d3qm",
+    "correctedAt": "2025-06-29T19:46:35.960Z",
+    "lastVerified": "2025-06-29T19:46:35.960Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226396068_4unx910om": {
+    "originalClaim": "Spider-Man: No Way Home came out in 2022",
+    "correctedInfo": "Spider-Man: No Way Home was released on December 17, 2021",
+    "topic": "Spider-Man: No Way Home came out in 2022",
+    "category": "date",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "spider-man: no way home came out in 2022",
+      "spider-man: no way home was released on december 17, 2021"
+    ],
+    "id": "correction_1751226396068_4unx910om",
+    "correctedAt": "2025-06-29T19:46:36.068Z",
+    "lastVerified": "2025-06-29T19:46:36.068Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226396173_hspribeg7": {
+    "originalClaim": "Deadpool & Wolverine came out in 2023",
+    "correctedInfo": "Deadpool & Wolverine was released on July 26, 2024",
+    "topic": "Deadpool & Wolverine came out in 2023",
+    "category": "date",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "deadpool & wolverine came out in 2023",
+      "deadpool & wolverine was released on july 26, 2024"
+    ],
+    "id": "correction_1751226396173_hspribeg7",
+    "correctedAt": "2025-06-29T19:46:36.173Z",
+    "lastVerified": "2025-06-29T19:46:36.173Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226396277_tj1l6xq7b": {
+    "originalClaim": "The Infinity Stones were created by Thanos",
+    "correctedInfo": "The Infinity Stones were created by the Big Bang, not by Thanos",
+    "topic": "The Infinity Stones were created by Thanos",
+    "category": "trivia",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the infinity stones were created by thanos",
+      "the infinity stones were created by the big bang, not by thanos"
+    ],
+    "id": "correction_1751226396277_tj1l6xq7b",
+    "correctedAt": "2025-06-29T19:46:36.277Z",
+    "lastVerified": "2025-06-29T19:46:36.277Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226396383_fqjzasudj": {
+    "originalClaim": "Captain America was frozen for 100 years",
+    "correctedInfo": "Captain America was frozen for approximately 70 years, from 1945 to 2011",
+    "topic": "Captain America was frozen for 100 years",
+    "category": "trivia",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "captain america was frozen for 100 years",
+      "captain america was frozen for approximately 70 years, from 1945 to 2011"
+    ],
+    "id": "correction_1751226396383_fqjzasudj",
+    "correctedAt": "2025-06-29T19:46:36.383Z",
+    "lastVerified": "2025-06-29T19:46:36.383Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226396489_6xxa8ezf4": {
+    "originalClaim": "Thor's hammer Mjolnir was destroyed by Hela",
+    "correctedInfo": "Thor's hammer Mjolnir was destroyed by Hela in Thor: Ragnarok (2017)",
+    "topic": "Thor's hammer Mjolnir was destroyed by Hela",
+    "category": "trivia",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "thor's hammer mjolnir was destroyed by hela",
+      "thor's hammer mjolnir was destroyed by hela in thor: ragnarok (2017)"
+    ],
+    "id": "correction_1751226396489_6xxa8ezf4",
+    "correctedAt": "2025-06-29T19:46:36.489Z",
+    "lastVerified": "2025-06-29T19:46:36.489Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226396597_626eepjvn": {
+    "originalClaim": "Ben Affleck plays Batman in all DC movies",
+    "correctedInfo": "Ben Affleck played Batman in Batman v Superman, Justice League, and Suicide Squad, but Robert Pattinson plays Batman in The Batman (2022)",
+    "topic": "Ben Affleck plays Batman in all DC movies",
+    "category": "cast",
+    "franchise": "DC",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "ben affleck plays batman in all dc movies",
+      "ben affleck played batman in batman v superman, justice league, and suicide squad, but robert pattinson plays batman in the batman (2022)"
+    ],
+    "id": "correction_1751226396597_626eepjvn",
+    "correctedAt": "2025-06-29T19:46:36.597Z",
+    "lastVerified": "2025-06-29T19:46:36.597Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226396703_k34fq4p2e": {
+    "originalClaim": "Henry Cavill is still playing Superman",
+    "correctedInfo": "Henry Cavill played Superman from 2013 to 2022, but David Corenswet will play Superman in Superman: Legacy (2025)",
+    "topic": "Henry Cavill is still playing Superman",
+    "category": "cast",
+    "franchise": "DC",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "henry cavill is still playing superman",
+      "henry cavill played superman from 2013 to 2022, but david corenswet will play superman in superman: legacy (2025)"
+    ],
+    "id": "correction_1751226396703_k34fq4p2e",
+    "correctedAt": "2025-06-29T19:46:36.703Z",
+    "lastVerified": "2025-06-29T19:46:36.703Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226396810_mwujwrsbc": {
+    "originalClaim": "Gal Gadot plays Wonder Woman in all DC movies",
+    "correctedInfo": "Gal Gadot played Wonder Woman in Wonder Woman (2017), Justice League, and Wonder Woman 1984",
+    "topic": "Gal Gadot plays Wonder Woman in all DC movies",
+    "category": "cast",
+    "franchise": "DC",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "gal gadot plays wonder woman in all dc movies",
+      "gal gadot played wonder woman in wonder woman (2017), justice league, and wonder woman 1984"
+    ],
+    "id": "correction_1751226396810_mwujwrsbc",
+    "correctedAt": "2025-06-29T19:46:36.810Z",
+    "lastVerified": "2025-06-29T19:46:36.810Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226396916_95ts7bcql": {
+    "originalClaim": "Jared Leto plays Joker in all DC movies",
+    "correctedInfo": "Jared Leto played Joker in Suicide Squad (2016), but Joaquin Phoenix played Joker in Joker (2019)",
+    "topic": "Jared Leto plays Joker in all DC movies",
+    "category": "cast",
+    "franchise": "DC",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "jared leto plays joker in all dc movies",
+      "jared leto played joker in suicide squad (2016), but joaquin phoenix played joker in joker (2019)"
+    ],
+    "id": "correction_1751226396916_95ts7bcql",
+    "correctedAt": "2025-06-29T19:46:36.916Z",
+    "lastVerified": "2025-06-29T19:46:36.916Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226397023_ufbnwux77": {
+    "originalClaim": "The Dark Knight came out in 2009",
+    "correctedInfo": "The Dark Knight was released on July 18, 2008",
+    "topic": "The Dark Knight came out in 2009",
+    "category": "date",
+    "franchise": "DC",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the dark knight came out in 2009",
+      "the dark knight was released on july 18, 2008"
+    ],
+    "id": "correction_1751226397023_ufbnwux77",
+    "correctedAt": "2025-06-29T19:46:37.023Z",
+    "lastVerified": "2025-06-29T19:46:37.023Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226397131_t7tw5ovl3": {
+    "originalClaim": "Man of Steel came out in 2014",
+    "correctedInfo": "Man of Steel was released on June 14, 2013",
+    "topic": "Man of Steel came out in 2014",
+    "category": "date",
+    "franchise": "DC",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "man of steel came out in 2014",
+      "man of steel was released on june 14, 2013"
+    ],
+    "id": "correction_1751226397131_t7tw5ovl3",
+    "correctedAt": "2025-06-29T19:46:37.131Z",
+    "lastVerified": "2025-06-29T19:46:37.131Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226397237_hezysbuak": {
+    "originalClaim": "Wonder Woman came out in 2018",
+    "correctedInfo": "Wonder Woman was released on June 2, 2017",
+    "topic": "Wonder Woman came out in 2018",
+    "category": "date",
+    "franchise": "DC",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "wonder woman came out in 2018",
+      "wonder woman was released on june 2, 2017"
+    ],
+    "id": "correction_1751226397237_hezysbuak",
+    "correctedAt": "2025-06-29T19:46:37.237Z",
+    "lastVerified": "2025-06-29T19:46:37.237Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226397344_uj6a6gz73": {
+    "originalClaim": "The Batman came out in 2023",
+    "correctedInfo": "The Batman was released on March 4, 2022",
+    "topic": "The Batman came out in 2023",
+    "category": "date",
+    "franchise": "DC",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the batman came out in 2023",
+      "the batman was released on march 4, 2022"
+    ],
+    "id": "correction_1751226397344_uj6a6gz73",
+    "correctedAt": "2025-06-29T19:46:37.344Z",
+    "lastVerified": "2025-06-29T19:46:37.344Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226397451_cbp6cy3f9": {
+    "originalClaim": "Batman's parents were killed by the Joker",
+    "correctedInfo": "Batman's parents were killed by Joe Chill, not the Joker",
+    "topic": "Batman's parents were killed by the Joker",
+    "category": "trivia",
+    "franchise": "DC",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "batman's parents were killed by the joker",
+      "batman's parents were killed by joe chill, not the joker"
+    ],
+    "id": "correction_1751226397451_cbp6cy3f9",
+    "correctedAt": "2025-06-29T19:46:37.451Z",
+    "lastVerified": "2025-06-29T19:46:37.451Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226397558_o92xfnrhi": {
+    "originalClaim": "Superman gets his powers from the sun",
+    "correctedInfo": "Superman gets his powers from Earth's yellow sun, which is different from Krypton's red sun",
+    "topic": "Superman gets his powers from the sun",
+    "category": "trivia",
+    "franchise": "DC",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "superman gets his powers from the sun",
+      "superman gets his powers from earth's yellow sun, which is different from krypton's red sun"
+    ],
+    "id": "correction_1751226397558_o92xfnrhi",
+    "correctedAt": "2025-06-29T19:46:37.558Z",
+    "lastVerified": "2025-06-29T19:46:37.558Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226397665_cccc8qsi8": {
+    "originalClaim": "Mark Hamill plays Luke Skywalker in all Star Wars movies",
+    "correctedInfo": "Mark Hamill plays Luke Skywalker in the original trilogy and sequel trilogy, but Sebastian Stan plays a younger Luke in The Mandalorian",
+    "topic": "Mark Hamill plays Luke Skywalker in all Star Wars movies",
+    "category": "cast",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "mark hamill plays luke skywalker in all star wars movies",
+      "mark hamill plays luke skywalker in the original trilogy and sequel trilogy, but sebastian stan plays a younger luke in the mandalorian"
+    ],
+    "id": "correction_1751226397665_cccc8qsi8",
+    "correctedAt": "2025-06-29T19:46:37.665Z",
+    "lastVerified": "2025-06-29T19:46:37.665Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226397771_n4a01eij1": {
+    "originalClaim": "Harrison Ford plays Han Solo in all Star Wars movies",
+    "correctedInfo": "Harrison Ford plays Han Solo in the original trilogy and The Force Awakens, but Alden Ehrenreich plays young Han in Solo: A Star Wars Story",
+    "topic": "Harrison Ford plays Han Solo in all Star Wars movies",
+    "category": "cast",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "harrison ford plays han solo in all star wars movies",
+      "harrison ford plays han solo in the original trilogy and the force awakens, but alden ehrenreich plays young han in solo: a star wars story"
+    ],
+    "id": "correction_1751226397771_n4a01eij1",
+    "correctedAt": "2025-06-29T19:46:37.771Z",
+    "lastVerified": "2025-06-29T19:46:37.771Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226397878_2gimrkl50": {
+    "originalClaim": "Carrie Fisher plays Princess Leia in all Star Wars movies",
+    "correctedInfo": "Carrie Fisher played Princess Leia in the original trilogy and sequel trilogy until her death in 2016",
+    "topic": "Carrie Fisher plays Princess Leia in all Star Wars movies",
+    "category": "cast",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "carrie fisher plays princess leia in all star wars movies",
+      "carrie fisher played princess leia in the original trilogy and sequel trilogy until her death in 2016"
+    ],
+    "id": "correction_1751226397878_2gimrkl50",
+    "correctedAt": "2025-06-29T19:46:37.878Z",
+    "lastVerified": "2025-06-29T19:46:37.878Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226397985_oa546f8ed": {
+    "originalClaim": "Ewan McGregor plays Obi-Wan Kenobi in all Star Wars movies",
+    "correctedInfo": "Ewan McGregor plays Obi-Wan Kenobi in the prequel trilogy and Obi-Wan Kenobi series, but Alec Guinness played him in the original trilogy",
+    "topic": "Ewan McGregor plays Obi-Wan Kenobi in all Star Wars movies",
+    "category": "cast",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "ewan mcgregor plays obi-wan kenobi in all star wars movies",
+      "ewan mcgregor plays obi-wan kenobi in the prequel trilogy and obi-wan kenobi series, but alec guinness played him in the original trilogy"
+    ],
+    "id": "correction_1751226397985_oa546f8ed",
+    "correctedAt": "2025-06-29T19:46:37.985Z",
+    "lastVerified": "2025-06-29T19:46:37.985Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226398091_etk2a5jeb": {
+    "originalClaim": "Star Wars: A New Hope came out in 1978",
+    "correctedInfo": "Star Wars: A New Hope was released on May 25, 1977",
+    "topic": "Star Wars: A New Hope came out in 1978",
+    "category": "date",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "star wars: a new hope came out in 1978",
+      "star wars: a new hope was released on may 25, 1977"
+    ],
+    "id": "correction_1751226398091_etk2a5jeb",
+    "correctedAt": "2025-06-29T19:46:38.091Z",
+    "lastVerified": "2025-06-29T19:46:38.091Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226398196_uwhjkstvg": {
+    "originalClaim": "The Empire Strikes Back came out in 1981",
+    "correctedInfo": "The Empire Strikes Back was released on May 21, 1980",
+    "topic": "The Empire Strikes Back came out in 1981",
+    "category": "date",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the empire strikes back came out in 1981",
+      "the empire strikes back was released on may 21, 1980"
+    ],
+    "id": "correction_1751226398196_uwhjkstvg",
+    "correctedAt": "2025-06-29T19:46:38.196Z",
+    "lastVerified": "2025-06-29T19:46:38.196Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226398303_fv4d6c8he": {
+    "originalClaim": "Return of the Jedi came out in 1984",
+    "correctedInfo": "Return of the Jedi was released on May 25, 1983",
+    "topic": "Return of the Jedi came out in 1984",
+    "category": "date",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "return of the jedi came out in 1984",
+      "return of the jedi was released on may 25, 1983"
+    ],
+    "id": "correction_1751226398303_fv4d6c8he",
+    "correctedAt": "2025-06-29T19:46:38.303Z",
+    "lastVerified": "2025-06-29T19:46:38.303Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226398409_am45q2vn5": {
+    "originalClaim": "The Force Awakens came out in 2016",
+    "correctedInfo": "The Force Awakens was released on December 18, 2015",
+    "topic": "The Force Awakens came out in 2016",
+    "category": "date",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the force awakens came out in 2016",
+      "the force awakens was released on december 18, 2015"
+    ],
+    "id": "correction_1751226398409_am45q2vn5",
+    "correctedAt": "2025-06-29T19:46:38.409Z",
+    "lastVerified": "2025-06-29T19:46:38.409Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226398516_qmshliu5y": {
+    "originalClaim": "The Last Jedi came out in 2018",
+    "correctedInfo": "The Last Jedi was released on December 15, 2017",
+    "topic": "The Last Jedi came out in 2018",
+    "category": "date",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the last jedi came out in 2018",
+      "the last jedi was released on december 15, 2017"
+    ],
+    "id": "correction_1751226398516_qmshliu5y",
+    "correctedAt": "2025-06-29T19:46:38.516Z",
+    "lastVerified": "2025-06-29T19:46:38.516Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226398620_1cn93uc55": {
+    "originalClaim": "The Rise of Skywalker came out in 2020",
+    "correctedInfo": "The Rise of Skywalker was released on December 20, 2019",
+    "topic": "The Rise of Skywalker came out in 2020",
+    "category": "date",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the rise of skywalker came out in 2020",
+      "the rise of skywalker was released on december 20, 2019"
+    ],
+    "id": "correction_1751226398620_1cn93uc55",
+    "correctedAt": "2025-06-29T19:46:38.620Z",
+    "lastVerified": "2025-06-29T19:46:38.620Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226398727_wf02ay2x8": {
+    "originalClaim": "Darth Vader is Luke Skywalker's father",
+    "correctedInfo": "Darth Vader (Anakin Skywalker) is Luke Skywalker's father, revealed in The Empire Strikes Back",
+    "topic": "Darth Vader is Luke Skywalker's father",
+    "category": "trivia",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "darth vader is luke skywalker's father",
+      "darth vader (anakin skywalker) is luke skywalker's father, revealed in the empire strikes back"
+    ],
+    "id": "correction_1751226398727_wf02ay2x8",
+    "correctedAt": "2025-06-29T19:46:38.727Z",
+    "lastVerified": "2025-06-29T19:46:38.727Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226398833_fsddj20bh": {
+    "originalClaim": "The Death Star was destroyed twice",
+    "correctedInfo": "The Death Star was destroyed twice - first in A New Hope, then the Death Star II in Return of the Jedi",
+    "topic": "The Death Star was destroyed twice",
+    "category": "trivia",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the death star was destroyed twice",
+      "the death star was destroyed twice - first in a new hope, then the death star ii in return of the jedi"
+    ],
+    "id": "correction_1751226398833_fsddj20bh",
+    "correctedAt": "2025-06-29T19:46:38.833Z",
+    "lastVerified": "2025-06-29T19:46:38.833Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226398939_hfsqnjok8": {
+    "originalClaim": "Yoda is the oldest Jedi",
+    "correctedInfo": "Yoda was one of the oldest Jedi, living to be 900 years old",
+    "topic": "Yoda is the oldest Jedi",
+    "category": "trivia",
+    "franchise": "Star Wars",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "yoda is the oldest jedi",
+      "yoda was one of the oldest jedi, living to be 900 years old"
+    ],
+    "id": "correction_1751226398939_hfsqnjok8",
+    "correctedAt": "2025-06-29T19:46:38.939Z",
+    "lastVerified": "2025-06-29T19:46:38.939Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226399047_zra6nakaq": {
+    "originalClaim": "William Shatner plays Captain Kirk in all Star Trek movies",
+    "correctedInfo": "William Shatner plays Captain Kirk in the original series and original cast movies, but Chris Pine plays Kirk in the Kelvin timeline movies",
+    "topic": "William Shatner plays Captain Kirk in all Star Trek movies",
+    "category": "cast",
+    "franchise": "Star Trek",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "william shatner plays captain kirk in all star trek movies",
+      "william shatner plays captain kirk in the original series and original cast movies, but chris pine plays kirk in the kelvin timeline movies"
+    ],
+    "id": "correction_1751226399047_zra6nakaq",
+    "correctedAt": "2025-06-29T19:46:39.047Z",
+    "lastVerified": "2025-06-29T19:46:39.047Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226399153_lhfi5zj7o": {
+    "originalClaim": "Leonard Nimoy plays Spock in all Star Trek movies",
+    "correctedInfo": "Leonard Nimoy plays Spock in the original series and original cast movies, but Zachary Quinto plays Spock in the Kelvin timeline movies",
+    "topic": "Leonard Nimoy plays Spock in all Star Trek movies",
+    "category": "cast",
+    "franchise": "Star Trek",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "leonard nimoy plays spock in all star trek movies",
+      "leonard nimoy plays spock in the original series and original cast movies, but zachary quinto plays spock in the kelvin timeline movies"
+    ],
+    "id": "correction_1751226399153_lhfi5zj7o",
+    "correctedAt": "2025-06-29T19:46:39.153Z",
+    "lastVerified": "2025-06-29T19:46:39.153Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226399259_kgssle5i7": {
+    "originalClaim": "Patrick Stewart plays Captain Picard in all Star Trek",
+    "correctedInfo": "Patrick Stewart plays Captain Picard in Star Trek: The Next Generation and Star Trek: Picard",
+    "topic": "Patrick Stewart plays Captain Picard in all Star Trek",
+    "category": "cast",
+    "franchise": "Star Trek",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "patrick stewart plays captain picard in all star trek",
+      "patrick stewart plays captain picard in star trek: the next generation and star trek: picard"
+    ],
+    "id": "correction_1751226399259_kgssle5i7",
+    "correctedAt": "2025-06-29T19:46:39.259Z",
+    "lastVerified": "2025-06-29T19:46:39.259Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226399365_4hl47okan": {
+    "originalClaim": "Star Trek: The Motion Picture came out in 1980",
+    "correctedInfo": "Star Trek: The Motion Picture was released on December 7, 1979",
+    "topic": "Star Trek: The Motion Picture came out in 1980",
+    "category": "date",
+    "franchise": "Star Trek",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "star trek: the motion picture came out in 1980",
+      "star trek: the motion picture was released on december 7, 1979"
+    ],
+    "id": "correction_1751226399365_4hl47okan",
+    "correctedAt": "2025-06-29T19:46:39.365Z",
+    "lastVerified": "2025-06-29T19:46:39.365Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226399472_wjlbfjcd3": {
+    "originalClaim": "Star Trek (2009) came out in 2010",
+    "correctedInfo": "Star Trek (2009) was released on May 8, 2009",
+    "topic": "Star Trek (2009) came out in 2010",
+    "category": "date",
+    "franchise": "Star Trek",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "star trek (2009) came out in 2010",
+      "star trek (2009) was released on may 8, 2009"
+    ],
+    "id": "correction_1751226399472_wjlbfjcd3",
+    "correctedAt": "2025-06-29T19:46:39.472Z",
+    "lastVerified": "2025-06-29T19:46:39.472Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226399579_ypjsihlzi": {
+    "originalClaim": "Daniel Radcliffe plays Harry Potter in all movies",
+    "correctedInfo": "Daniel Radcliffe plays Harry Potter in all 8 Harry Potter movies",
+    "topic": "Daniel Radcliffe plays Harry Potter in all movies",
+    "category": "cast",
+    "franchise": "Harry Potter",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "daniel radcliffe plays harry potter in all movies",
+      "daniel radcliffe plays harry potter in all 8 harry potter movies"
+    ],
+    "id": "correction_1751226399579_ypjsihlzi",
+    "correctedAt": "2025-06-29T19:46:39.579Z",
+    "lastVerified": "2025-06-29T19:46:39.579Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226399683_103lzii8a": {
+    "originalClaim": "Emma Watson plays Hermione in all Harry Potter movies",
+    "correctedInfo": "Emma Watson plays Hermione Granger in all 8 Harry Potter movies",
+    "topic": "Emma Watson plays Hermione in all Harry Potter movies",
+    "category": "cast",
+    "franchise": "Harry Potter",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "emma watson plays hermione in all harry potter movies",
+      "emma watson plays hermione granger in all 8 harry potter movies"
+    ],
+    "id": "correction_1751226399683_103lzii8a",
+    "correctedAt": "2025-06-29T19:46:39.683Z",
+    "lastVerified": "2025-06-29T19:46:39.683Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226399788_qqhryt6o8": {
+    "originalClaim": "Rupert Grint plays Ron in all Harry Potter movies",
+    "correctedInfo": "Rupert Grint plays Ron Weasley in all 8 Harry Potter movies",
+    "topic": "Rupert Grint plays Ron in all Harry Potter movies",
+    "category": "cast",
+    "franchise": "Harry Potter",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "rupert grint plays ron in all harry potter movies",
+      "rupert grint plays ron weasley in all 8 harry potter movies"
+    ],
+    "id": "correction_1751226399788_qqhryt6o8",
+    "correctedAt": "2025-06-29T19:46:39.788Z",
+    "lastVerified": "2025-06-29T19:46:39.788Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226399892_hwuf55nhf": {
+    "originalClaim": "The Lord of the Rings: Fellowship of the Ring came out in 2002",
+    "correctedInfo": "The Lord of the Rings: Fellowship of the Ring was released on December 19, 2001",
+    "topic": "The Lord of the Rings: Fellowship of the Ring came out in 2002",
+    "category": "date",
+    "franchise": "Lord of the Rings",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the lord of the rings: fellowship of the ring came out in 2002",
+      "the lord of the rings: fellowship of the ring was released on december 19, 2001"
+    ],
+    "id": "correction_1751226399892_hwuf55nhf",
+    "correctedAt": "2025-06-29T19:46:39.892Z",
+    "lastVerified": "2025-06-29T19:46:39.892Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226399997_szn7xr20e": {
+    "originalClaim": "The Matrix came out in 2000",
+    "correctedInfo": "The Matrix was released on March 31, 1999",
+    "topic": "The Matrix came out in 2000",
+    "category": "date",
+    "franchise": "The Matrix",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the matrix came out in 2000",
+      "the matrix was released on march 31, 1999"
+    ],
+    "id": "correction_1751226399997_szn7xr20e",
+    "correctedAt": "2025-06-29T19:46:39.997Z",
+    "lastVerified": "2025-06-29T19:46:39.997Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226400102_hn6j806b8": {
+    "originalClaim": "Titanic came out in 1998",
+    "correctedInfo": "Titanic was released on December 19, 1997",
+    "topic": "Titanic came out in 1998",
+    "category": "date",
+    "franchise": "General",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "titanic came out in 1998",
+      "titanic was released on december 19, 1997"
+    ],
+    "id": "correction_1751226400102_hn6j806b8",
+    "correctedAt": "2025-06-29T19:46:40.102Z",
+    "lastVerified": "2025-06-29T19:46:40.102Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226400210_oj247qm88": {
+    "originalClaim": "The Titanic sank in 1913",
+    "correctedInfo": "The Titanic sank on April 15, 1912",
+    "topic": "The Titanic sank in 1913",
+    "category": "trivia",
+    "franchise": "General",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the titanic sank in 1913",
+      "the titanic sank on april 15, 1912"
+    ],
+    "id": "correction_1751226400210_oj247qm88",
+    "correctedAt": "2025-06-29T19:46:40.210Z",
+    "lastVerified": "2025-06-29T19:46:40.210Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751226400316_u7si9dynb": {
+    "originalClaim": "The Beatles broke up in 1971",
+    "correctedInfo": "The Beatles broke up in 1970",
+    "topic": "The Beatles broke up in 1971",
+    "category": "trivia",
+    "franchise": "General",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "the beatles broke up in 1971",
+      "the beatles broke up in 1970"
+    ],
+    "id": "correction_1751226400316_u7si9dynb",
+    "correctedAt": "2025-06-29T19:46:40.316Z",
+    "lastVerified": "2025-06-29T19:46:40.316Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751227421898_ims4d4v0e": {
+    "originalClaim": "Andrew Garfield plays Spider-Man in the MCU",
+    "correctedInfo": "Tom Holland plays Spider-Man in the MCU",
+    "topic": "Andrew Garfield plays Spider-Man in the MCU",
+    "category": "cast",
+    "franchise": "Marvel",
+    "confidence": "HIGH",
+    "correctedBy": "api",
+    "tags": [
+      "andrew garfield plays spider-man in the mcu",
+      "tom holland plays spider-man in the mcu"
+    ],
+    "id": "correction_1751227421898_ims4d4v0e",
+    "correctedAt": "2025-06-29T20:03:41.898Z",
+    "lastVerified": "2025-06-29T20:03:41.898Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751227504371_3bbkkpbm7": {
+    "originalClaim": "Andrew Garfield plays Spider-Man",
+    "correctedInfo": "Tom Holland plays Spider-Man",
+    "topic": "Andrew Garfield plays Spider-Man",
+    "category": "cast",
+    "franchise": "Marvel",
+    "confidence": "MEDIUM",
+    "correctedBy": "user",
+    "tags": [
+      "andrew garfield plays spider-man",
+      "tom holland plays spider-man"
+    ],
+    "id": "correction_1751227504371_3bbkkpbm7",
+    "correctedAt": "2025-06-29T20:05:04.371Z",
+    "lastVerified": "2025-06-29T20:05:04.371Z",
+    "verificationCount": 1,
+    "isActive": true
+  },
+  "correction_1751227805051_uur9569ei": {
+    "originalClaim": "2024",
+    "correctedInfo": "2023",
+    "topic": "2024",
+    "category": "date",
+    "confidence": "MEDIUM",
+    "correctedBy": "user",
+    "tags": [
+      "2024",
+      "2023"
+    ],
+    "id": "correction_1751227805051_uur9569ei",
+    "correctedAt": "2025-06-29T20:10:05.051Z",
+    "lastVerified": "2025-06-29T20:10:05.051Z",
+    "verificationCount": 1,
+    "isActive": true
+  }
+}

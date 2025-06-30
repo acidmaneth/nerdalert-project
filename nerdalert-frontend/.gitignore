@@ -19,3 +19,6 @@ setup-tunnel.md
 
 # GitHub upload instructions
 README-GITHUB.md
+
+# Frontend lock file (local development only)
+.frontend-lock
